@@ -4,10 +4,10 @@
     <parent>
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
-        <version>3.8</version>
+        <version>3.16</version>
     </parent>
 
-    <groupId>eu.europa.ec.fisheries.uvms.movement-rules</groupId>
+    <groupId>fish.focus.uvms.movement-rules</groupId>
     <artifactId>movement-rules</artifactId>
     <version>2.4.15-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -15,20 +15,20 @@
     <properties>
         <drools.version>7.65.0.Final</drools.version>
 		
-        <uvms.pom.version>3.8</uvms.pom.version>
+        <uvms.pom.version>3.16</uvms.pom.version>
         <exchange.model.version>5.3.22-UVMS</exchange.model.version>
-        <user.model.version>2.2.2</user.model.version>
-        <audit.model.version>4.3.10</audit.model.version>
+        <user.model.version>2.2.3</user.model.version>
+        <audit.model.version>4.3.11</audit.model.version>
         <spatial.model.version>2.2.10-UVMS</spatial.model.version>
-        <uvms.config.version>4.1.5</uvms.config.version>
-        <usm4uvms.version>4.1.9</usm4uvms.version>
-        <uvms.common.version>4.1.11</uvms.common.version>
+        <uvms.config.version>4.1.6</uvms.config.version>
+        <usm4uvms.version>4.1.10</usm4uvms.version>
+        <uvms.common.version>4.1.12</uvms.common.version>
         <uvms.asset.version>6.8.22</uvms.asset.version>
         <uvms.incident.version>1.0.11</uvms.incident.version>
 
 
         <project.scm.id>github</project.scm.id>
-        <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-MovementRulesModule-APP.git</scm.connection>
+        <scm.connection>scm:git:https://github.com/FocusFish/UVMS-MovementRulesModule.git</scm.connection>
         
         <installAtEnd>false</installAtEnd>
       
@@ -65,12 +65,12 @@
                 <type>pom</type>
             </dependency>
             <dependency>
-	            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+	            <groupId>fish.focus.uvms.commons</groupId>
 	            <artifactId>uvms-commons-message</artifactId>
 				<version>${uvms.common.version}</version>
 			</dependency>
             <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <groupId>fish.focus.uvms.commons</groupId>
                 <artifactId>uvms-commons-date</artifactId>
                 <version>${uvms.common.version}</version>
             </dependency>
@@ -95,32 +95,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>focus-repo</id>
-            <name>Focus nexus repository</name>
-            <url>http://nexus.focus.fish/nexus/</url>
-        </repository>
-        <repository>
-            <id>jboss</id>
-            <name>JBoss repository</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public//</url>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>focus-releases</id>
-            <name>UnionVms Repository</name>
-            <url>http://nexus.focus.fish/nexus/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>focus-snapshots</id>
-            <name>UnionVms Snapshot Repository</name>
-            <url>http://nexus.focus.fish/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <scm>
         <connection>${scm.connection}</connection>
