@@ -4,13 +4,13 @@ expression
 action
 ruleguid
 
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.uvms.movementrules.model.dto.MovementDetails;
+import fish.focus.uvms.commons.date.DateUtils;
+import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import java.util.Arrays;
-import eu.europa.ec.fisheries.uvms.movementrules.model.dto.VicinityInfoDTO;
+import fish.focus.uvms.movementrules.model.dto.VicinityInfoDTO;
 
 global org.slf4j.Logger logger;
-global eu.europa.ec.fisheries.uvms.movementrules.service.bean.ValidationServiceBean validationService;
+global fish.focus.uvms.movementrules.service.bean.ValidationServiceBean validationService;
 
 template "CustomRulesTemplate"
 
