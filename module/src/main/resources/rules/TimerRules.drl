@@ -1,8 +1,8 @@
-import eu.europa.ec.fisheries.uvms.rules.service.business.PreviousReportFact;
-import eu.europa.ec.fisheries.uvms.rules.service.business.RulesUtil;
+import fish.focus.uvms.rules.service.business.PreviousReportFact;
+import fish.focus.uvms.rules.service.business.RulesUtil;
 import java.util.Date;
 
-global eu.europa.ec.fisheries.uvms.rules.service.RulesService rulesService;
+global fish.focus.uvms.rules.service.RulesService rulesService;
 global org.slf4j.Logger logger;
 
 rule "DEADLINE"

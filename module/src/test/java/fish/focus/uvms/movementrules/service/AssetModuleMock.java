@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import eu.europa.ec.fisheries.uvms.asset.client.model.SimpleCreatePoll;
+import fish.focus.uvms.asset.client.model.SimpleCreatePoll;
 
 @Path("asset/rest/internal/")
 @Stateless

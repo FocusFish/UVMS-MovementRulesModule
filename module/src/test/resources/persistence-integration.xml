@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="movementRulesPU" transaction-type="JTA">
         <jta-data-source>jdbc/uvms_movementrules</jta-data-source>
-        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
+        <class>fish.focus.uvms.config.service.entity.Parameter</class>
         <properties>
             <property name="hibernate.dialect" value="${hibernate.dialect}" />
 <!--             <property name="hibernate.show_sql" value="true" /> -->

@@ -11,17 +11,17 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.mapper;
 
-import eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetId;
-import eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetIdType;
-import eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetType;
-import eu.europa.ec.fisheries.schema.exchange.movement.v1.MovementActivityType;
-import eu.europa.ec.fisheries.schema.exchange.movement.v1.MovementActivityTypeType;
-import eu.europa.ec.fisheries.schema.exchange.movement.v1.MovementComChannelType;
-import eu.europa.ec.fisheries.schema.exchange.movement.v1.MovementMetaData;
-import eu.europa.ec.fisheries.schema.exchange.movement.v1.MovementPoint;
-import eu.europa.ec.fisheries.schema.exchange.movement.v1.MovementSourceType;
-import eu.europa.ec.fisheries.schema.exchange.movement.v1.MovementType;
-import eu.europa.ec.fisheries.schema.exchange.movement.v1.MovementTypeType;
+import fish.focus.schema.exchange.movement.asset.v1.AssetId;
+import fish.focus.schema.exchange.movement.asset.v1.AssetIdType;
+import fish.focus.schema.exchange.movement.asset.v1.AssetType;
+import fish.focus.schema.exchange.movement.v1.MovementActivityType;
+import fish.focus.schema.exchange.movement.v1.MovementActivityTypeType;
+import fish.focus.schema.exchange.movement.v1.MovementComChannelType;
+import fish.focus.schema.exchange.movement.v1.MovementMetaData;
+import fish.focus.schema.exchange.movement.v1.MovementPoint;
+import fish.focus.schema.exchange.movement.v1.MovementSourceType;
+import fish.focus.schema.exchange.movement.v1.MovementType;
+import fish.focus.schema.exchange.movement.v1.MovementTypeType;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import java.util.Date;
 
@@ -81,25 +81,25 @@ public class ExchangeMovementMapper {
     private static AssetId mapAssetId(MovementDetails movementDetails) {
         AssetId assetId = new AssetId();
         if (movementDetails.getCfr() != null) {
-            eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetIdList idList = new eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetIdList();
+            fish.focus.schema.exchange.movement.asset.v1.AssetIdList idList = new fish.focus.schema.exchange.movement.asset.v1.AssetIdList();
             idList.setIdType(AssetIdType.CFR);
             idList.setValue(movementDetails.getCfr());
             assetId.getAssetIdList().add(idList);
         }
         if (movementDetails.getIrcs() != null) {
-            eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetIdList idList = new eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetIdList();
+            fish.focus.schema.exchange.movement.asset.v1.AssetIdList idList = new fish.focus.schema.exchange.movement.asset.v1.AssetIdList();
             idList.setIdType(AssetIdType.IRCS);
             idList.setValue(movementDetails.getIrcs());
             assetId.getAssetIdList().add(idList);
         }
         if (movementDetails.getMmsi() != null) {
-            eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetIdList idList = new eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetIdList();
+            fish.focus.schema.exchange.movement.asset.v1.AssetIdList idList = new fish.focus.schema.exchange.movement.asset.v1.AssetIdList();
             idList.setIdType(AssetIdType.MMSI);
             idList.setValue(movementDetails.getMmsi());
             assetId.getAssetIdList().add(idList);
         }
         if (movementDetails.getImo() != null) {
-            eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetIdList idList = new eu.europa.ec.fisheries.schema.exchange.movement.asset.v1.AssetIdList();
+            fish.focus.schema.exchange.movement.asset.v1.AssetIdList idList = new fish.focus.schema.exchange.movement.asset.v1.AssetIdList();
             idList.setIdType(AssetIdType.IMO);
             idList.setValue(movementDetails.getImo());
             assetId.getAssetIdList().add(idList);

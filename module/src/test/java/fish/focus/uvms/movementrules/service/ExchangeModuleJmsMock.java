@@ -23,9 +23,9 @@ import fish.focus.uvms.movementrules.model.mapper.JAXBMarshaller;
 import fish.focus.uvms.movementrules.service.message.producer.bean.RulesMessageProducerBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeBaseRequest;
-import eu.europa.ec.fisheries.schema.exchange.service.v1.ServiceResponseType;
-import eu.europa.ec.fisheries.uvms.exchange.model.mapper.ExchangeModuleResponseMapper;
+import fish.focus.schema.exchange.module.v1.ExchangeBaseRequest;
+import fish.focus.schema.exchange.service.v1.ServiceResponseType;
+import fish.focus.uvms.exchange.model.mapper.ExchangeModuleResponseMapper;
 
 @MessageDriven(mappedName = "jms/queue/UVMSExchangeEvent", activationConfig = {
         @ActivationConfigProperty(propertyName = "messagingType", propertyValue = "javax.jms.MessageListener"),

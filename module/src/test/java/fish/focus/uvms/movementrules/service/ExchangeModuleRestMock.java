@@ -1,8 +1,8 @@
 package fish.focus.uvms.movementrules.service;
 
-import eu.europa.ec.fisheries.schema.exchange.module.v1.SetCommandRequest;
-import eu.europa.ec.fisheries.schema.exchange.plugin.types.v1.EmailType;
-import eu.europa.ec.fisheries.schema.exchange.v1.*;
+import fish.focus.schema.exchange.module.v1.SetCommandRequest;
+import fish.focus.schema.exchange.plugin.types.v1.EmailType;
+import fish.focus.schema.exchange.v1.*;
 
 import javax.ejb.Stateless;
 import javax.ws.rs.*;

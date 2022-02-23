@@ -6,7 +6,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>jdbc/uvms_movementrules</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
+        <class>fish.focus.uvms.config.service.entity.Parameter</class>
         <properties>
             <property name="hibernate.dialect" value="${hibernate.dialect}"/>
             <!--             <property name="hibernate.hbm2ddl.auto" value="create" /> -->

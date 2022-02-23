@@ -22,7 +22,7 @@ import javax.jms.TextMessage;
 import javax.json.bind.Jsonb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
+import fish.focus.uvms.asset.client.model.AssetDTO;
 import fish.focus.uvms.commons.date.JsonBConfigurator;
 import fish.focus.uvms.movementrules.service.dao.RulesDao;
 import fish.focus.uvms.movementrules.service.entity.PreviousReport;

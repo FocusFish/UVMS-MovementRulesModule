@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import fish.focus.schema.movementrules.movement.v1.MovementSourceType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialEnrichmentRS;
+import fish.focus.uvms.spatial.model.schemas.SpatialEnrichmentRS;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import fish.focus.uvms.movementrules.service.boundary.AreaTransitionsDTO;
 import fish.focus.uvms.movementrules.service.boundary.SpatialRestClient;

@@ -1,8 +1,8 @@
 package fish.focus.uvms.movementrules.service;
 
-import eu.europa.ec.fisheries.schema.exchange.plugin.types.v1.EmailType;
-import eu.europa.ec.fisheries.uvms.asset.client.model.PollType;
-import eu.europa.ec.fisheries.uvms.asset.client.model.SimpleCreatePoll;
+import fish.focus.schema.exchange.plugin.types.v1.EmailType;
+import fish.focus.uvms.asset.client.model.PollType;
+import fish.focus.uvms.asset.client.model.SimpleCreatePoll;
 import fish.focus.uvms.commons.date.*;
 import fish.focus.uvms.commons.rest.filter.MDCFilter;
 import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
@@ -55,7 +55,7 @@ public abstract class BuildRulesServiceDeployment {
         WebArchive testWar = ShrinkWrap.create(WebArchive.class, "unionvms.war");
 
         File[] files = Maven.configureResolver().loadPomFromFile("pom.xml")
-                .resolve("eu.europa.ec.fisheries.uvms.spatialSwe:spatial-model",
+                .resolve("fish.focus.uvms.spatial:spatial-model",
                         "fish.focus.uvms.user:user-model",
                         "fish.focus.uvms.lib:usm4uvms",
                         "fish.focus.uvms.commons:uvms-commons-date")

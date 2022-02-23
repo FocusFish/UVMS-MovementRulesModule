@@ -19,13 +19,13 @@ import javax.ejb.Stateless;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import eu.europa.ec.fisheries.schema.exchange.movement.v1.MovementSourceType;
+import fish.focus.schema.exchange.movement.v1.MovementSourceType;
 import fish.focus.uvms.commons.date.JsonBConfigurator;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.Area;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaExtendedIdentifierType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.Location;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LocationType;
+import fish.focus.uvms.spatial.model.schemas.Area;
+import fish.focus.uvms.spatial.model.schemas.AreaExtendedIdentifierType;
+import fish.focus.uvms.spatial.model.schemas.AreaType;
+import fish.focus.uvms.spatial.model.schemas.Location;
+import fish.focus.uvms.spatial.model.schemas.LocationType;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 
 @Stateless

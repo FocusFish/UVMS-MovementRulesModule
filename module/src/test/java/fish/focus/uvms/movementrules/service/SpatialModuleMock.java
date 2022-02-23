@@ -23,15 +23,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.Area;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaExtendedIdentifierType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreasByLocationType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestAreasType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationsType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.Location;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LocationType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialEnrichmentRS;
+import fish.focus.uvms.spatial.model.schemas.Area;
+import fish.focus.uvms.spatial.model.schemas.AreaExtendedIdentifierType;
+import fish.focus.uvms.spatial.model.schemas.AreaType;
+import fish.focus.uvms.spatial.model.schemas.AreasByLocationType;
+import fish.focus.uvms.spatial.model.schemas.ClosestAreasType;
+import fish.focus.uvms.spatial.model.schemas.ClosestLocationsType;
+import fish.focus.uvms.spatial.model.schemas.Location;
+import fish.focus.uvms.spatial.model.schemas.LocationType;
+import fish.focus.uvms.spatial.model.schemas.SpatialEnrichmentRS;
 
 /*
  * Test areas
