@@ -55,7 +55,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.incident</groupId>
+            <groupId>fish.focus.uvms.incident</groupId>
             <artifactId>incident-model</artifactId>
         </dependency>
         <dependency>
