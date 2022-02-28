@@ -5,8 +5,8 @@ import fish.focus.schema.movementrules.movement.v1.MovementTypeType;
 import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
 import fish.focus.uvms.commons.date.JsonBConfigurator;
 import fish.focus.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.incident.model.dto.IncidentTicketDto;
-import eu.europa.ec.fisheries.uvms.incident.model.dto.enums.IncidentType;
+import fish.focus.uvms.incident.model.dto.IncidentTicketDto;
+import fish.focus.uvms.incident.model.dto.enums.IncidentType;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import fish.focus.uvms.movementrules.service.constants.ServiceConstants;
 import fish.focus.uvms.movementrules.service.dto.EventTicket;
@@ -111,7 +111,7 @@ public class IncidentProducer {
         dto.setCreatedDate(Instant.now());
         dto.setId(null);
         dto.setMovementId(movementDetails.getMovementGuid());
-        dto.setMovementSource(eu.europa.ec.fisheries.uvms.incident.model.dto.enums.MovementSourceType.fromValue(movementDetails.getSource()));
+        dto.setMovementSource(fish.focus.uvms.incident.model.dto.enums.MovementSourceType.fromValue(movementDetails.getSource()));
         dto.setPositionTime(movementDetails.getPositionTime());
 
         dto.setPollId(null);

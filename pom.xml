@@ -9,7 +9,7 @@
 
     <groupId>fish.focus.uvms.movement-rules</groupId>
     <artifactId>movement-rules</artifactId>
-    <version>2.4.15</version>
+    <version>2.4.16</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -17,14 +17,14 @@
 		
         <uvms.pom.version>3.16</uvms.pom.version>
         <exchange.model.version>5.3.23</exchange.model.version>
-        <user.model.version>2.2.3</user.model.version>
+        <user.model.version>2.2.5</user.model.version>
         <audit.model.version>4.3.11</audit.model.version>
         <spatial.model.version>2.2.11</spatial.model.version>
         <uvms.config.version>4.1.6</uvms.config.version>
         <usm4uvms.version>4.1.10</usm4uvms.version>
         <uvms.common.version>4.1.12</uvms.common.version>
         <uvms.asset.version>6.8.23</uvms.asset.version>
-        <uvms.incident.version>1.0.11</uvms.incident.version>
+        <uvms.incident.version>1.0.12</uvms.incident.version>
 
 
         <project.scm.id>github</project.scm.id>
@@ -75,7 +75,7 @@
                 <version>${uvms.common.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.incident</groupId>
+                <groupId>fish.focus.uvms.incident</groupId>
                 <artifactId>incident-model</artifactId>
                 <version>${uvms.incident.version}</version>
             </dependency>
