@@ -23,7 +23,7 @@
         <uvms.config.version>4.1.6</uvms.config.version>
         <usm4uvms.version>4.1.11</usm4uvms.version>
         <uvms.common.version>4.1.12</uvms.common.version>
-        <uvms.asset.version>6.8.25</uvms.asset.version>
+        <uvms.asset.version>6.8.26</uvms.asset.version>
         <uvms.incident.version>1.0.12</uvms.incident.version>
 
 
