@@ -12,7 +12,7 @@
     <parent>
         <groupId>fish.focus.uvms.movement-rules</groupId>
         <artifactId>movement-rules</artifactId>
-        <version>2.4.16</version>
+        <version>2.4.17</version>
     </parent>
 
     <artifactId>movement-rules-model</artifactId>
@@ -53,7 +53,7 @@
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
-				<version>3.5.0</version>
+				<version>3.5.4</version>
 				<executions>
 					<execution>
 						<id>generate-asset-module</id>
@@ -112,7 +112,7 @@
                     <dependency>
                         <groupId>org.apache.maven.scm</groupId>
                         <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.12.2</version>
+                        <version>2.0.1</version>
                     </dependency>
                 </dependencies>
                 <configuration>

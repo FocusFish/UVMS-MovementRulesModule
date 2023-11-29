@@ -46,7 +46,7 @@ import fish.focus.uvms.spatial.model.schemas.SpatialEnrichmentRS;
  *          |
  */
 
-@Path("spatialSwe/spatialnonsecure/json")
+@Path("spatial/spatialnonsecure/json")
 @Stateless
 public class SpatialModuleMock {
 
