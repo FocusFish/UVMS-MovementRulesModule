@@ -14,7 +14,7 @@
 
     <properties>
         <drools.version>7.73.0.Final</drools.version>
-		
+
         <uvms.pom.version>3.21</uvms.pom.version>
         <exchange.model.version>5.3.30</exchange.model.version>
         <user.model.version>2.2.6</user.model.version>
@@ -23,15 +23,15 @@
         <uvms.config.version>4.1.6</uvms.config.version>
         <usm4uvms.version>4.1.12</usm4uvms.version>
         <uvms.common.version>4.1.15</uvms.common.version>
-        <uvms.asset.version>6.8.32</uvms.asset.version>
+        <uvms.asset.version>6.8.33</uvms.asset.version>
         <uvms.incident.version>1.0.12</uvms.incident.version>
 
 
         <project.scm.id>github</project.scm.id>
         <scm.connection>scm:git:https://github.com/FocusFish/UVMS-MovementRulesModule.git</scm.connection>
-        
+
         <installAtEnd>false</installAtEnd>
-      
+
         <docker.dev.version>4.2.34</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>movementrules</docker.liquibase.db.user>
