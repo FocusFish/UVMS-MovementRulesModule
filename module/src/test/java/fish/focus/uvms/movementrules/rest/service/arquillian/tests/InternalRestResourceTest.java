@@ -1,28 +1,8 @@
 package fish.focus.uvms.movementrules.rest.service.arquillian.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.jms.TextMessage;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import fish.focus.schema.movementrules.customrule.v1.SubCriteriaType;
-import org.hamcrest.CoreMatchers;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import fish.focus.schema.exchange.module.v1.SendMovementToPluginRequest;
 import fish.focus.schema.movementrules.customrule.v1.AvailabilityType;
+import fish.focus.schema.movementrules.customrule.v1.SubCriteriaType;
 import fish.focus.schema.movementrules.customrule.v1.SubscriptionTypeType;
 import fish.focus.schema.movementrules.module.v1.GetTicketsAndRulesByMovementsRequest;
 import fish.focus.schema.movementrules.module.v1.GetTicketsAndRulesByMovementsResponse;
@@ -33,12 +13,29 @@ import fish.focus.uvms.movementrules.rest.service.arquillian.JMSHelper;
 import fish.focus.uvms.movementrules.rest.service.arquillian.RulesTestHelper;
 import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
 import fish.focus.uvms.movementrules.service.dao.RulesDao;
-import fish.focus.uvms.movementrules.service.entity.CustomRule;
-import fish.focus.uvms.movementrules.service.entity.RuleAction;
-import fish.focus.uvms.movementrules.service.entity.RuleSegment;
-import fish.focus.uvms.movementrules.service.entity.RuleSubscription;
-import fish.focus.uvms.movementrules.service.entity.Ticket;
+import fish.focus.uvms.movementrules.service.entity.*;
 import fish.focus.uvms.movementrules.service.mapper.CustomRuleMapper;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import javax.jms.TextMessage;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class InternalRestResourceTest extends BuildRulesRestDeployment {
@@ -137,16 +134,16 @@ public class InternalRestResourceTest extends BuildRulesRestDeployment {
                 .path("evaluate")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(movementDetails));
-        assertThat(response.getStatus(), CoreMatchers.is(Status.OK.getStatusCode()));
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
         
         TextMessage message = (TextMessage) jmsHelper.getMessageFromExchangeQueue();
         
-        assertThat(message, CoreMatchers.is(CoreMatchers.notNullValue()));
+        assertThat(message, is(notNullValue()));
         
         SendMovementToPluginRequest sendMovementRequest = JAXBMarshaller.unmarshallTextMessage(message, SendMovementToPluginRequest.class);
-        assertThat(sendMovementRequest, CoreMatchers.is(CoreMatchers.notNullValue()));
+        assertThat(sendMovementRequest, is(notNullValue()));
         
-        assertThat(sendMovementRequest.getReport().getMovement().getConnectId(), CoreMatchers.is(movementDetails.getConnectId()));
+        assertThat(sendMovementRequest.getReport().getMovement().getConnectId(), is(movementDetails.getConnectId()));
         
         rulesDao.removeCustomRuleAfterTests(customRule);
     }
@@ -190,16 +187,16 @@ public class InternalRestResourceTest extends BuildRulesRestDeployment {
                 .path("evaluate")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(movementDetails));
-        assertThat(response.getStatus(), CoreMatchers.is(Status.OK.getStatusCode()));
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
 
         TextMessage message = (TextMessage) jmsHelper.getMessageFromExchangeQueue();
 
-        assertThat(message, CoreMatchers.is(CoreMatchers.notNullValue()));
+        assertThat(message, is(notNullValue()));
 
         SendMovementToPluginRequest sendMovementRequest = JAXBMarshaller.unmarshallTextMessage(message, SendMovementToPluginRequest.class);
-        assertThat(sendMovementRequest, CoreMatchers.is(CoreMatchers.notNullValue()));
+        assertThat(sendMovementRequest, is(notNullValue()));
 
-        assertThat(sendMovementRequest.getReport().getMovement().getConnectId(), CoreMatchers.is(movementDetails.getConnectId()));
+        assertThat(sendMovementRequest.getReport().getMovement().getConnectId(), is(movementDetails.getConnectId()));
 
         rulesDao.removeCustomRuleAfterTests(customRule);
     }

@@ -11,16 +11,7 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.dao;
 
-import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
+import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,9 +19,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
-import fish.focus.uvms.movementrules.service.dao.RulesDao;
-import fish.focus.uvms.movementrules.service.entity.CustomRule;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DaoBeanMockerTest {
