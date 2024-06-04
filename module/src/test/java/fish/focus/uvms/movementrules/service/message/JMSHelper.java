@@ -11,24 +11,39 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.message;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.Queue;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import fish.focus.uvms.commons.message.api.MessageConstants;
 import org.apache.activemq.artemis.api.core.TransportConfiguration;
 import org.apache.activemq.artemis.api.jms.ActiveMQJMSClient;
 import org.apache.activemq.artemis.api.jms.JMSFactoryType;
 import org.apache.activemq.artemis.core.remoting.impl.netty.NettyConnectorFactory;
-import fish.focus.uvms.commons.message.api.MessageConstants;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.jms.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static fish.focus.uvms.commons.message.api.MessageConstants.EVENT_STREAM_EVENT;
+import static fish.focus.uvms.commons.message.api.MessageConstants.EVENT_STREAM_TOPIC;
+import static javax.jms.DeliveryMode.PERSISTENT;
 
 public class JMSHelper {
 
     private static final long TIMEOUT = 5000;
+
+    @Resource(lookup = "java:/" + EVENT_STREAM_TOPIC)
+    private Destination eventStreamDestination;
+
+    @Inject
+    @JMSConnectionFactory("java:/ConnectionFactory")
+    JMSContext context;
+
+    public void sendMessageOnEventStream(String message, String eventName) {
+        context.createProducer()
+                .setProperty(EVENT_STREAM_EVENT, eventName)
+                .setDeliveryMode(PERSISTENT)
+                .send(eventStreamDestination, message);
+    }
 
     public String sendMessageToRules(String text, String requestType, String resQueue) throws Exception {
         Connection connection = getConnectionFactory().createConnection("test", "test");
@@ -72,17 +87,17 @@ public class JMSHelper {
             Queue responseQueue = session.createQueue(queue);
             consumer = session.createConsumer(responseQueue);
 
-            while (consumer.receive(10L) != null);
+            while (consumer.receive(10L) != null) ;
         } finally {
             connection.close();
         }
     }
-    
+
     private ConnectionFactory getConnectionFactory() {
         Map<String, Object> params = new HashMap<>();
         params.put("host", "localhost");
         params.put("port", 5445);
         TransportConfiguration transportConfiguration = new TransportConfiguration(NettyConnectorFactory.class.getName(), params);
-        return ActiveMQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF,transportConfiguration);
+        return ActiveMQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, transportConfiguration);
     }
 }
