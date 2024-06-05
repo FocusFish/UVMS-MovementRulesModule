@@ -1,16 +1,5 @@
 package fish.focus.uvms.movementrules.rest.service.arquillian.tests;
 
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.UUID;
-import javax.inject.Inject;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import fish.focus.schema.movementrules.customrule.v1.AvailabilityType;
 import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
 import fish.focus.schema.movementrules.ticket.v1.TicketType;
@@ -24,109 +13,117 @@ import fish.focus.uvms.movementrules.service.dao.RulesDao;
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import fish.focus.uvms.movementrules.service.entity.RuleSegment;
 import fish.focus.uvms.movementrules.service.mapper.TicketMapper;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.UUID;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(Arquillian.class)
 public class SSEResourceTest extends BuildRulesRestDeployment {
 
-    private static final String user = "user";
+    private static final String FLAG_STATE_SWE = "SWE";
+    private static final String USER = "user";
 
     @Inject
     private RulesServiceBean rulesService;
-    
+
     @Inject
     private ValidationServiceBean validationService;
 
     @Inject
     private RulesDao rulesDao;
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void sseBroadcastSubscribingToRuleTest() throws Exception {
-        
-        CustomRule customRule = createCustomRule(user);
-        
+        CustomRule customRule = createCustomRule(USER);
+
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         MovementDetails movementDetails = getMovementDetails();
-            
+
         try (SSETestClient client = new SSETestClient()) {
             validationService.customRuleTriggered(createdCustomRule.getName(), createdCustomRule.getGuid().toString(), movementDetails, "CREATE_TICKET");
-            
-            TicketType ticket = client.getTicket(10000);
+
+            var ticket = await().atMost(10, SECONDS).until(client::getTicket, is(notNullValue()));
             assertThat(ticket.getRuleName(), is(customRule.getName()));
             assertThat(ticket.getMovementGuid(), is(movementDetails.getMovementGuid()));
             assertThat(ticket.getAssetGuid(), is(movementDetails.getAssetGuid()));
         }
         rulesDao.removeCustomRuleAfterTests(customRule);
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void sseBroadcastSubscribingToRuleTwoConnectionsTest() throws Exception {
-        
-        CustomRule customRule = createCustomRule(user);
-        
+        CustomRule customRule = createCustomRule(USER);
+
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         MovementDetails movementDetails = getMovementDetails();
-            
+
         try (SSETestClient client = new SSETestClient();
-                SSETestClient client2 = new SSETestClient()) {
+             SSETestClient client2 = new SSETestClient()) {
             validationService.customRuleTriggered(createdCustomRule.getName(), createdCustomRule.getGuid().toString(), movementDetails, "CREATE_TICKET");
-            
-            TicketType ticket = client.getTicket(10000);
+
+            var ticket = await().atMost(10, SECONDS).until(client::getTicket, is(notNullValue()));
             assertThat(ticket.getRuleName(), is(customRule.getName()));
             assertThat(ticket.getMovementGuid(), is(movementDetails.getMovementGuid()));
             assertThat(ticket.getAssetGuid(), is(movementDetails.getAssetGuid()));
-            
-            TicketType ticket2 = client2.getTicket(10000);
+
+            var ticket2 = await().atMost(10, SECONDS).until(client2::getTicket, is(notNullValue()));
             assertThat(ticket2.getRuleName(), is(customRule.getName()));
             assertThat(ticket2.getMovementGuid(), is(movementDetails.getMovementGuid()));
             assertThat(ticket2.getAssetGuid(), is(movementDetails.getAssetGuid()));
         }
         rulesDao.removeCustomRuleAfterTests(customRule);
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void sseBroadcastNotSubscribingToRuleTest() throws Exception {
-        String flagstate = "SWE";
-        
         CustomRule customRule = createCustomRule(null);
-        
+
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         MovementDetails movementDetails = getMovementDetails();
-        movementDetails.setFlagState(flagstate);
-            
+        movementDetails.setFlagState(FLAG_STATE_SWE);
+
         try (SSETestClient client = new SSETestClient()) {
             validationService.customRuleTriggered(createdCustomRule.getName(), createdCustomRule.getGuid().toString(), movementDetails, ";");
-            
-            TicketType ticket = client.getTicket(4000);
-            assertThat(ticket, is(nullValue()));
+
+            await().pollDelay(4, SECONDS).until(client::getTicket, is(nullValue()));
         }
         rulesDao.removeCustomRuleAfterTests(customRule);
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void sseBroadcastNotSubscribingToGlobalRuleTest() throws Exception {
-        String flagstate = "SWE";
-        
         CustomRule customRule = createCustomRule(null);
-        
+
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
         createdCustomRule.setAvailability(AvailabilityType.GLOBAL);
         CustomRule updatedRule = rulesService.updateCustomRule(createdCustomRule);
-        
+
         MovementDetails movementDetails = getMovementDetails();
-        movementDetails.setFlagState(flagstate);
-            
+        movementDetails.setFlagState(FLAG_STATE_SWE);
+
         TicketType ticket;
         try (SSETestClient client = new SSETestClient()) {
             validationService.customRuleTriggered(updatedRule.getName(), updatedRule.getGuid().toString(), movementDetails, "CREATE_TICKET");
-            
-            ticket = client.getTicket(10000);
+
+            ticket = await().atMost(10, SECONDS).until(client::getTicket, is(notNullValue()));
             assertThat(ticket.getRuleName(), is(updatedRule.getName()));
             assertThat(ticket.getMovementGuid(), is(movementDetails.getMovementGuid()));
             assertThat(ticket.getAssetGuid(), is(movementDetails.getAssetGuid()));
@@ -134,30 +131,27 @@ public class SSEResourceTest extends BuildRulesRestDeployment {
         rulesDao.removeTicketAfterTests(TicketMapper.toTicketEntity(ticket));
         rulesDao.removeCustomRuleAfterTests(customRule);
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void sseBroadcastTicketUpdateTest() throws Exception {
-        String flagstate = "SWE";
-        
-        CustomRule customRule = createCustomRule(user);
-        
+        CustomRule customRule = createCustomRule(USER);
+
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         MovementDetails movementDetails = getMovementDetails();
-        movementDetails.setFlagState(flagstate);
-            
+        movementDetails.setFlagState(FLAG_STATE_SWE);
+
         try (SSETestClient client = new SSETestClient()) {
             validationService.customRuleTriggered(createdCustomRule.getName(), createdCustomRule.getGuid().toString(), movementDetails, "CREATE_TICKET");
-            
-            TicketType ticket = client.getTicket(10000);
+
+            var ticket = await().atMost(10, SECONDS).until(client::getTicketAndReset, is(notNullValue()));
             assertThat(ticket.getRuleName(), is(customRule.getName()));
-            
+
             ticket.setStatus(TicketStatusType.CLOSED);
             rulesService.updateTicketStatus(TicketMapper.toTicketEntity(ticket));
-            
-            TicketType ticketUpdate = client.getTicket(10000);
-            
+
+            var ticketUpdate = await().atMost(10, SECONDS).until(client::getTicket, is(notNullValue()));
             assertThat(ticketUpdate.getGuid(), is(ticket.getGuid()));
             assertThat(ticketUpdate.getStatus(), is(TicketStatusType.CLOSED));
             assertThat(ticketUpdate.getMovementGuid(), is(movementDetails.getMovementGuid()));
@@ -182,7 +176,7 @@ public class SSEResourceTest extends BuildRulesRestDeployment {
         customRule.getRuleSegmentList().add(segment);
         return customRule;
     }
-    
+
     private MovementDetails getMovementDetails() {
         MovementDetails movementDetails = new MovementDetails();
         movementDetails.setMovementGuid(UUID.randomUUID().toString());
