@@ -15,7 +15,6 @@ import fish.focus.schema.movementrules.customrule.v1.*;
 import fish.focus.uvms.commons.date.DateUtils;
 import fish.focus.uvms.movementrules.service.dao.MockData;
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
-import fish.focus.uvms.movementrules.service.mapper.CustomRuleMapper;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
