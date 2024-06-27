@@ -1,5 +1,7 @@
 package fish.focus.uvms.movementrules.service.business;
 
+import fish.focus.uvms.asset.client.AssetClient;
+import fish.focus.uvms.asset.client.model.AssetDTO;
 import fish.focus.uvms.config.service.ParameterService;
 import fish.focus.uvms.movementrules.service.TransactionalTests;
 import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
@@ -12,14 +14,22 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import javax.inject.Inject;
 import javax.jms.TextMessage;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Random;
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(Arquillian.class)
 public class CheckCommunicationTaskTest extends TransactionalTests {
@@ -36,6 +46,9 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     @Inject
     ParameterService parameterService;
 
+    @Mock
+    AssetClient assetClient;
+
     @Inject
     RulesDao rulesDao;
 
@@ -49,13 +62,20 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         jmsHelper.clearQueue(INCIDENT_EVENT);
     }
 
+    @Before
+    public void initMocks() {
+        MockitoAnnotations.initMocks(this);
+    }
+
     @Test
     @OperateOnDeployment("normal")
     public void runTaskWithValidReport() throws Exception {
         PreviousReport previousReport = getBasicPreviousReport();
         rulesDao.updatePreviousReport(previousReport);
+        var assetDto = getBasicAsset(previousReport.getAssetGuid());
+        when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        new CheckCommunicationTask(rulesService, parameterService).run();
+        new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao).run();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
@@ -68,11 +88,45 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         PreviousReport previousReport = getBasicPreviousReport();
         previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
         rulesDao.updatePreviousReport(previousReport);
+        var assetDto = getBasicAsset(previousReport.getAssetGuid());
+        when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        new CheckCommunicationTask(rulesService, parameterService).run();
+        new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao).run();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
+    }
+
+    @Test
+    @OperateOnDeployment("normal")
+    public void runWithThresholdPassedAndInactiveAsset() {
+        PreviousReport previousReport = getBasicPreviousReport();
+        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
+        rulesDao.updatePreviousReport(previousReport);
+        var assetDto = getBasicAsset(previousReport.getAssetGuid());
+        assetDto.setActive(false);
+        when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
+
+        new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao).run();
+
+        PreviousReport noPreviousReport = rulesDao.getPreviousReportByAssetGuid(assetDto.getId().toString());
+        assertThat("Should be no previous report", noPreviousReport, is(nullValue()));
+    }
+
+    @Test
+    @OperateOnDeployment("normal")
+    public void runWithThresholdPassedAndParkedAsset() {
+        PreviousReport previousReport = getBasicPreviousReport();
+        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
+        rulesDao.updatePreviousReport(previousReport);
+        var assetDto = getBasicAsset(previousReport.getAssetGuid());
+        assetDto.setParked(true);
+        when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
+
+        new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao).run();
+
+        PreviousReport noPreviousReport = rulesDao.getPreviousReportByAssetGuid(assetDto.getId().toString());
+        assertThat("Should be no previous report", noPreviousReport, is(nullValue()));
     }
 
     @Test
@@ -81,8 +135,10 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         PreviousReport previousReport = getBasicPreviousReport();
         previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
         rulesDao.updatePreviousReport(previousReport);
+        var assetDto = getBasicAsset(previousReport.getAssetGuid());
+        when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService);
+        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
         checkCommunicationTask.run();
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
@@ -99,8 +155,10 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         PreviousReport previousReport = getBasicPreviousReport();
         previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
         rulesDao.updatePreviousReport(previousReport);
+        var assetDto = getBasicAsset(previousReport.getAssetGuid());
+        when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService);
+        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
         checkCommunicationTask.run();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
@@ -119,12 +177,14 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
 
     @Test
     @OperateOnDeployment("normal")
-    public void checkPreviousReportUpdateTimeUpdated() throws Exception {
+    public void checkPreviousReportUpdateTimeUpdated() {
         PreviousReport previousReport = getBasicPreviousReport();
         previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
         rulesDao.updatePreviousReport(previousReport);
+        var assetDto = getBasicAsset(previousReport.getAssetGuid());
+        when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService);
+        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
         checkCommunicationTask.run();
 
         PreviousReport fetchedReport = rulesDao.getPreviousReportByAssetGuid(previousReport.getAssetGuid());
@@ -135,11 +195,12 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     @Test
     @OperateOnDeployment("normal")
     public void runTaskWith30MinSteps() throws Exception {
-        long thirtyMinsInMs = ONE_HOUR_IN_MILLISECONDS / 2;
         PreviousReport previousReport = getBasicPreviousReport();
         rulesDao.updatePreviousReport(previousReport);
+        var assetDto = getBasicAsset(previousReport.getAssetGuid());
+        when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService);
+        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
         checkCommunicationTask.run();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
@@ -218,8 +279,10 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         PreviousReport previousReport = getBasicPreviousReport();
         previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - thirtyMinsInMs));
         rulesDao.updatePreviousReport(previousReport);
+        var assetDto = getBasicAsset(previousReport.getAssetGuid());
+        when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService);
+        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
         checkCommunicationTask.run();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
@@ -302,5 +365,49 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdatedBy("UVMS");
 
         return previousReport;
+    }
+
+    private AssetDTO getBasicAsset(String assetGuid) {
+        AssetDTO asset = new AssetDTO();
+
+        asset.setId(UUID.fromString(assetGuid));
+        asset.setName("Test asset");
+        asset.setActive(true);
+        asset.setExternalMarking("EXT123");
+        asset.setFlagStateCode("SWE");
+
+        asset.setCommissionDate(Instant.now());
+        asset.setCfr("CRF" + getRandomIntegers(9));
+        asset.setIrcs("F" + getRandomIntegers(7));
+        asset.setImo(getRandomIntegers(7));
+        asset.setMmsi("M" + getRandomIntegers(8));
+        asset.setIccat("ICCAT" + getRandomIntegers(20));
+        asset.setUvi("UVI" + getRandomIntegers(20));
+        asset.setGfcm("GFCM" + getRandomIntegers(20));
+
+        asset.setGrossTonnage(10d);
+        asset.setPowerOfMainEngine(10d);
+
+        asset.setGearFishingType("Demersal");
+
+        asset.setOwnerName("Foo Bar");
+        asset.setOwnerAddress("Hacker st. 1337");
+
+        asset.setProdOrgCode("ORGCODE");
+        asset.setProdOrgName("ORGNAME");
+
+        asset.setUpdateTime(Instant.now());
+        asset.setUpdatedBy("TEST");
+
+        return asset;
+    }
+
+    private String getRandomIntegers(int length) {
+        return new Random()
+                .ints(0, 9)
+                .mapToObj(String::valueOf)
+                .limit(length)
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+                .toString();
     }
 }
