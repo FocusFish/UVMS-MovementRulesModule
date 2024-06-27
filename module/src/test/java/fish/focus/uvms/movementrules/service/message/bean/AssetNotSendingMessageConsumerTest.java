@@ -1,6 +1,5 @@
 package fish.focus.uvms.movementrules.service.message.bean;
 
-import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import fish.focus.uvms.movementrules.service.BuildRulesServiceDeployment;
 import fish.focus.uvms.movementrules.service.bean.CustomRulesEvaluator;
@@ -9,7 +8,6 @@ import fish.focus.uvms.movementrules.service.business.RulesValidator;
 import fish.focus.uvms.movementrules.service.constants.ServiceConstants;
 import fish.focus.uvms.movementrules.service.dao.RulesDao;
 import fish.focus.uvms.movementrules.service.entity.PreviousReport;
-import fish.focus.uvms.movementrules.service.entity.Ticket;
 import fish.focus.uvms.movementrules.service.message.JMSHelper;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,10 +21,13 @@ import javax.jms.TextMessage;
 import java.time.Instant;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class AssetNotSendingMessageConsumerTest extends BuildRulesServiceDeployment {
+
+    private static final String QUEUE_NAME = "IncidentEvent";
 
     @Inject
     private RulesServiceBean rulesService;
@@ -41,8 +42,6 @@ public class AssetNotSendingMessageConsumerTest extends BuildRulesServiceDeploym
     private CustomRulesEvaluator customRulesEvaluator;
 
     private JMSHelper jmsHelper = new JMSHelper();
-
-    private static final String QUEUE_NAME = "IncidentEvent";
 
     @Before
     public void clearExchangeQueue() throws Exception {

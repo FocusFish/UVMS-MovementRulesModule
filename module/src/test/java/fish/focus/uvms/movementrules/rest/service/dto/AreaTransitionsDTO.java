@@ -11,9 +11,10 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.rest.service.dto;
 
-import java.util.List;
 import fish.focus.uvms.spatial.model.schemas.AreaExtendedIdentifierType;
 import fish.focus.uvms.spatial.model.schemas.SpatialEnrichmentRS;
+
+import java.util.List;
 
 public class AreaTransitionsDTO {
 

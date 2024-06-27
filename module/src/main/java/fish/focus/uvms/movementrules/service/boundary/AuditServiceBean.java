@@ -11,26 +11,26 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.boundary;
 
-import javax.annotation.Resource;
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.jms.Queue;
-
 import fish.focus.schema.audit.source.v1.AuditDataSourceMethod;
+import fish.focus.uvms.audit.model.mapper.AuditLogModelMapper;
 import fish.focus.uvms.commons.message.api.MessageConstants;
 import fish.focus.uvms.movementrules.service.constants.AuditObjectTypeEnum;
 import fish.focus.uvms.movementrules.service.constants.AuditOperationEnum;
 import fish.focus.uvms.movementrules.service.message.producer.bean.AuditProducerBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import fish.focus.uvms.audit.model.mapper.AuditLogModelMapper;
+
+import javax.annotation.Resource;
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.jms.Queue;
 
 @Stateless
 public class AuditServiceBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class);
-    
+
     @Inject
     private AuditProducerBean producer;
 
@@ -46,5 +46,4 @@ public class AuditServiceBean {
             LOG.error("[ERROR] Error when sending message to Audit. ] {}", e.getMessage());
         }
     }
-    
 }

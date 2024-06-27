@@ -1,6 +1,7 @@
 package fish.focus.uvms.movementrules.service.business;
 
 import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Assert;
@@ -15,6 +16,7 @@ import fish.focus.uvms.movementrules.service.business.RulesValidator;
 import fish.focus.uvms.movementrules.service.dao.RulesDao;
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import fish.focus.uvms.movementrules.service.entity.Interval;
+
 import java.time.Instant;
 
 

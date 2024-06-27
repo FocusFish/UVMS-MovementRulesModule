@@ -14,6 +14,7 @@ package fish.focus.uvms.movementrules.service.mapper;
 import fish.focus.schema.movementrules.ticket.v1.TicketType;
 import fish.focus.uvms.commons.date.DateUtils;
 import fish.focus.uvms.movementrules.service.entity.Ticket;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,9 @@ import java.util.UUID;
 
 public class TicketMapper {
 
-    private TicketMapper() {}
-    
+    private TicketMapper() {
+    }
+
     public static TicketType toTicketType(TicketType ticketType, Ticket ticketEntity) {
         if (ticketEntity == null) {
             return null;

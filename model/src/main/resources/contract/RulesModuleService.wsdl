@@ -1,19 +1,18 @@
 <definitions xmlns:module="urn:module.movementrules.schema.focus.fish:v1"
              xmlns:customrule="urn:customrule.movementrules.schema.focus.fish:v1"
              xmlns:ticket="urn:ticket.movementrules.schema.focus.fish:v1"
-             xmlns:common="urn:common.movementrules.schema.focus.fish:v1"
              xmlns:search="urn:search.movementrules.schema.focus.fish:v1"
              xmlns:movement="urn:movement.movementrules.schema.focus.fish:v1"
              xmlns:exchange="urn:exchange.movementrules.schema.focus.fish:v1"
              xmlns:ticketrule="urn:ticketrule.movementrules.schema.focus.fish:v1"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
              name="MovementRulesModule"
              targetNamespace="urn:module.movementrules.schema.focus.fish:v1"
              xmlns="http://schemas.xmlsoap.org/wsdl/">
 
     <types>
-        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:module.movementrules.schema.focus.fish:v1">
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                    targetNamespace="urn:module.movementrules.schema.focus.fish:v1">
 
             <xsd:import namespace="urn:customrule.movementrules.schema.focus.fish:v1" schemaLocation="CustomRule.xsd"/>
             <xsd:import namespace="urn:common.movementrules.schema.focus.fish:v1" schemaLocation="RulesCommon.xsd"/>
@@ -21,7 +20,8 @@
             <xsd:import namespace="urn:ticket.movementrules.schema.focus.fish:v1" schemaLocation="Ticket.xsd"/>
             <xsd:import namespace="urn:movement.movementrules.schema.focus.fish:v1" schemaLocation="Movement.xsd"/>
             <xsd:import namespace="urn:exchange.movementrules.schema.focus.fish:v1" schemaLocation="Exchange.xsd"/>
-            <xsd:import namespace="urn:ticketrule.movementrules.schema.focus.fish:v1" schemaLocation="TicketAndRule.xsd"/>
+            <xsd:import namespace="urn:ticketrule.movementrules.schema.focus.fish:v1"
+                        schemaLocation="TicketAndRule.xsd"/>
 
             <!-- Rules Base Request -->
             <xsd:simpleType name="RulesModuleMethod">
@@ -33,17 +33,17 @@
                     <xsd:enumeration value="PING"/>
 
                     <xsd:enumeration value="GET_TICKETS_AND_RULES_BY_MOVEMENTS"/>
-                    
+
                     <xsd:enumeration value="EVALUATE_RULES"/>
-				</xsd:restriction>
+                </xsd:restriction>
             </xsd:simpleType>
 
-			<xsd:complexType name="RulesBaseRequest" abstract="true">
+            <xsd:complexType name="RulesBaseRequest" abstract="true">
                 <xsd:sequence>
                     <xsd:element name="method" type="module:RulesModuleMethod"/>
                     <xsd:element name="username" type="xsd:string"/>
                     <xsd:element name="logGuid" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-                    <xsd:element name="fluxDataFlow" minOccurs="0" maxOccurs="1" type="xsd:string" />
+                    <xsd:element name="fluxDataFlow" minOccurs="0" maxOccurs="1" type="xsd:string"/>
                     <xsd:element name="senderOrReceiver" minOccurs="0" maxOccurs="1" type="xsd:string"/>
                     <xsd:element name="onValue" minOccurs="0" maxOccurs="1" type="xsd:string"/>
                 </xsd:sequence>
@@ -71,12 +71,13 @@
                     </xsd:complexContent>
                 </xsd:complexType>
             </xsd:element>
-            
+
             <!-- List custom rules response -->
             <xsd:element name="GetCustomRuleListResponse">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="customRules" type="customrule:CustomRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xsd:element name="customRules" type="customrule:CustomRuleType" minOccurs="0"
+                                     maxOccurs="unbounded"/>
                         <xsd:element name="totalNumberOfPages" type="xsd:int" minOccurs="1" maxOccurs="1"/>
                         <xsd:element name="currentPage" type="xsd:int" minOccurs="1" maxOccurs="1"/>
                     </xsd:sequence>
@@ -95,7 +96,7 @@
                     </xsd:complexContent>
                 </xsd:complexType>
             </xsd:element>
-            
+
             <!-- List tickets response -->
             <xsd:element name="GetTicketListResponse">
                 <xsd:complexType>
@@ -132,7 +133,7 @@
                     </xsd:complexContent>
                 </xsd:complexType>
             </xsd:element>
-            
+
             <!-- Ticket QueryList response -->
             <xsd:element name="GetTicketListByQueryResponse">
                 <xsd:complexType>
@@ -168,7 +169,8 @@
                     <xsd:complexContent>
                         <xsd:extension base="module:RulesBaseRequest">
                             <xsd:sequence>
-                                <xsd:element name="movementGuids" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+                                <xsd:element name="movementGuids" type="xsd:string" minOccurs="1"
+                                             maxOccurs="unbounded"/>
                             </xsd:sequence>
                         </xsd:extension>
                     </xsd:complexContent>
@@ -189,7 +191,8 @@
                     <xsd:complexContent>
                         <xsd:extension base="module:RulesBaseRequest">
                             <xsd:sequence>
-                                <xsd:element name="movementGuids" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+                                <xsd:element name="movementGuids" type="xsd:string" minOccurs="1"
+                                             maxOccurs="unbounded"/>
                             </xsd:sequence>
                         </xsd:extension>
                     </xsd:complexContent>
@@ -232,7 +235,8 @@
                     <xsd:complexContent>
                         <xsd:extension base="module:RulesBaseRequest">
                             <xsd:sequence>
-                                <xsd:element name="movementGuids" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+                                <xsd:element name="movementGuids" type="xsd:string" minOccurs="1"
+                                             maxOccurs="unbounded"/>
                             </xsd:sequence>
                         </xsd:extension>
                     </xsd:complexContent>
@@ -242,22 +246,24 @@
             <xsd:element name="GetTicketsAndRulesByMovementsResponse">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="ticketsAndRules" type="ticketrule:TicketAndRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xsd:element name="ticketsAndRules" type="ticketrule:TicketAndRuleType" minOccurs="0"
+                                     maxOccurs="unbounded"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
 
-			<!-- Custom rule QueryList response -->
+            <!-- Custom rule QueryList response -->
             <xsd:element name="GetCustomRuleListByQueryResponse">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="customRules" type="customrule:CustomRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xsd:element name="customRules" type="customrule:CustomRuleType" minOccurs="0"
+                                     maxOccurs="unbounded"/>
                         <xsd:element name="totalNumberOfPages" type="xsd:int" minOccurs="1" maxOccurs="1"/>
                         <xsd:element name="currentPage" type="xsd:int" minOccurs="1" maxOccurs="1"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
-            
+
             <xsd:element name="GetTicketListByMovementsResponse">
                 <xsd:complexType>
                     <xsd:sequence>

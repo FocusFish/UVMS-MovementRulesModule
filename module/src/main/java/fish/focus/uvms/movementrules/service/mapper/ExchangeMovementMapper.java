@@ -13,22 +13,18 @@ package fish.focus.uvms.movementrules.service.mapper;
 
 import fish.focus.schema.exchange.movement.asset.v1.AssetId;
 import fish.focus.schema.exchange.movement.asset.v1.AssetIdType;
-import fish.focus.schema.exchange.movement.asset.v1.AssetType;
-import fish.focus.schema.exchange.movement.v1.MovementActivityType;
-import fish.focus.schema.exchange.movement.v1.MovementActivityTypeType;
-import fish.focus.schema.exchange.movement.v1.MovementComChannelType;
-import fish.focus.schema.exchange.movement.v1.MovementMetaData;
-import fish.focus.schema.exchange.movement.v1.MovementPoint;
-import fish.focus.schema.exchange.movement.v1.MovementSourceType;
-import fish.focus.schema.exchange.movement.v1.MovementType;
-import fish.focus.schema.exchange.movement.v1.MovementTypeType;
+import fish.focus.schema.exchange.movement.v1.*;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
+
 import java.util.Date;
 
 public class ExchangeMovementMapper {
-    
-    private ExchangeMovementMapper() {};
-   
+
+    private ExchangeMovementMapper() {
+    }
+
+    ;
+
     public static MovementType mapToExchangeMovementType(MovementDetails movementDetails) {
         MovementType movement = new MovementType();
         movement.setGuid(movementDetails.getMovementGuid());

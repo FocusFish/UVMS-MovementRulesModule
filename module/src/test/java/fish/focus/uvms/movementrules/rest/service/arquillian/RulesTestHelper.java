@@ -24,6 +24,7 @@ import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import fish.focus.uvms.movementrules.service.entity.RuleAction;
 import fish.focus.uvms.movementrules.service.entity.Ticket;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,14 +50,14 @@ public class RulesTestHelper {
     }
 
 
-    public static CustomRuleActionType createCreateTicketAction(){
+    public static CustomRuleActionType createCreateTicketAction() {
         CustomRuleActionType action = new CustomRuleActionType();
         action.setAction(ActionType.CREATE_TICKET);
         action.setOrder("0");
 
         return action;
     }
-    
+
     public static TicketQuery getBasicTicketQuery() {
         TicketQuery query = new TicketQuery();
         ListPagination pagination = new ListPagination();
@@ -73,7 +74,7 @@ public class RulesTestHelper {
         return criteria;
     }
 
-    public static CustomRuleType getCompleteNewCustomRule(){
+    public static CustomRuleType getCompleteNewCustomRule() {
         CustomRuleType customRule = new CustomRuleType();
 
         customRule.setName("Flag SWE && area DNK => Send to DNK" + " (" + System.currentTimeMillis() + ")");

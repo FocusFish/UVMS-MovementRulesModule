@@ -67,7 +67,8 @@ public class ConfigResourcesTest extends BuildRulesRestDeployment {
                 .path("config/ticketstatus")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, getToken())
-                .get(new GenericType<List<TicketStatusType>>(){});
+                .get(new GenericType<List<TicketStatusType>>() {
+                });
 
         assertEquals(3, response.size());
     }

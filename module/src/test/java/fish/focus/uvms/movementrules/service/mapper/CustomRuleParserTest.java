@@ -12,6 +12,7 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package fish.focus.uvms.movementrules.service.mapper;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +33,7 @@ import fish.focus.uvms.movementrules.service.entity.RuleSegment;
 import fish.focus.uvms.movementrules.service.mapper.CustomRuleParser;
 
 public class CustomRuleParserTest {
-  
+
     @Test
     public void testResourceDrl() throws Exception {
         List<CustomRule> rawRules = new ArrayList<CustomRule>();
@@ -605,7 +606,6 @@ public class CustomRuleParserTest {
         customRule.getRuleSegmentList().add(segment38);
 
 
-
         // Action
         RuleAction action = new RuleAction();
         action.setAction(ActionType.SEND_REPORT.value());
@@ -705,7 +705,7 @@ public class CustomRuleParserTest {
         assertEquals("SEND_REPORT,FLUX,DNK;", rules.get(0).getAction());
 
     }
-    
+
     @Test
     public void testParseRulesUnorderedSegments() throws Exception {
         List<CustomRule> rawRules = new ArrayList<CustomRule>();
@@ -758,14 +758,14 @@ public class CustomRuleParserTest {
         List<CustomRuleDto> rules = CustomRuleParser.parseRules(rawRules);
         assertEquals(expectedRule, rules.get(0).getExpression());
     }
-    
+
     @Test
     public void parseVMSEntryTest() {
         CustomRule customRule = new CustomRule();
         customRule.setName("Name");
         customRule.setGuid(UUID.randomUUID());
         customRule.setAvailability(AvailabilityType.PRIVATE.value());
-        
+
         RuleSegment segmentVmsEntryType = new RuleSegment();
         segmentVmsEntryType.setStartOperator("");
         segmentVmsEntryType.setCriteria(CriteriaType.AREA.value());
@@ -776,7 +776,7 @@ public class CustomRuleParserTest {
         segmentVmsEntryType.setLogicOperator(LogicOperatorType.AND.value());
         segmentVmsEntryType.setOrder(0);
         customRule.getRuleSegmentList().add(segmentVmsEntryType);
-        
+
         RuleSegment segmentVmsEntryCode = new RuleSegment();
         segmentVmsEntryCode.setStartOperator("");
         segmentVmsEntryCode.setCriteria(CriteriaType.AREA.value());
@@ -787,7 +787,7 @@ public class CustomRuleParserTest {
         segmentVmsEntryCode.setLogicOperator(LogicOperatorType.NONE.value());
         segmentVmsEntryCode.setOrder(0);
         customRule.getRuleSegmentList().add(segmentVmsEntryCode);
-        
+
         List<CustomRule> rawRules = new ArrayList<CustomRule>();
         rawRules.add(customRule);
         String expectedRule = "vmsEntAreaTypes.contains(\"EEZ\") && vmsEntAreaCodes.contains(\"SWE\")";
@@ -802,7 +802,7 @@ public class CustomRuleParserTest {
         customRule.setName("Name");
         customRule.setGuid(UUID.randomUUID());
         customRule.setAvailability(AvailabilityType.PRIVATE.value());
-        
+
         RuleSegment segmentVmsExitType = new RuleSegment();
         segmentVmsExitType.setStartOperator("");
         segmentVmsExitType.setCriteria(CriteriaType.AREA.value());
@@ -813,7 +813,7 @@ public class CustomRuleParserTest {
         segmentVmsExitType.setLogicOperator(LogicOperatorType.AND.value());
         segmentVmsExitType.setOrder(0);
         customRule.getRuleSegmentList().add(segmentVmsExitType);
-        
+
         RuleSegment segmentVmsExitCode = new RuleSegment();
         segmentVmsExitCode.setStartOperator("");
         segmentVmsExitCode.setCriteria(CriteriaType.AREA.value());
@@ -824,7 +824,7 @@ public class CustomRuleParserTest {
         segmentVmsExitCode.setLogicOperator(LogicOperatorType.NONE.value());
         segmentVmsExitCode.setOrder(0);
         customRule.getRuleSegmentList().add(segmentVmsExitCode);
-        
+
         List<CustomRule> rawRules = new ArrayList<CustomRule>();
         rawRules.add(customRule);
         String expectedRule = "vmsExtAreaTypes.contains(\"EEZ\") && vmsExtAreaCodes.contains(\"SWE\")";

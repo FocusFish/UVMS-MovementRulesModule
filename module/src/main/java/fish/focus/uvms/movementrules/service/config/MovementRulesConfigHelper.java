@@ -12,11 +12,12 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package fish.focus.uvms.movementrules.service.config;
 
 import fish.focus.uvms.config.constants.ConfigHelper;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.List;
 
 @Stateless
 public class MovementRulesConfigHelper implements ConfigHelper {
@@ -37,10 +38,10 @@ public class MovementRulesConfigHelper implements ConfigHelper {
     public String getModuleName() {
         return "movementrules";
     }
-    
-	@Override
-	public EntityManager getEntityManager() {
-		return em;
-	}
+
+    @Override
+    public EntityManager getEntityManager() {
+        return em;
+    }
 
 }

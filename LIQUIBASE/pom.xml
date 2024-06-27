@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -28,68 +29,70 @@
                 <driver.groupId>org.postgresql</driver.groupId>
                 <driver.artifactId>postgresql</driver.artifactId>
                 <driver.version>42.7.3</driver.version>
-                <db.diffTypes />
+                <db.diffTypes/>
             </properties>
             <dependencies>
-		        <dependency>
-		            <groupId>${driver.groupId}</groupId>
-		            <artifactId>${driver.artifactId}</artifactId>
-		            <version>${driver.version}</version>
-		        </dependency>
-		    </dependencies>
+                <dependency>
+                    <groupId>${driver.groupId}</groupId>
+                    <artifactId>${driver.artifactId}</artifactId>
+                    <version>${driver.version}</version>
+                </dependency>
+            </dependencies>
         </profile>
         <profile>
-			<id>publish-sql</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.liquibase</groupId>
-						<artifactId>liquibase-maven-plugin</artifactId>
-						<version>4.28.0</version>
-						<configuration>
-							<url>${db.docker.url}</url>
-							<migrationSqlOutputFile>${project.build.directory}/full-update.sql</migrationSqlOutputFile>
-							<outputFileEncoding>UTF-8</outputFileEncoding>
-							<changeLogFile>${db.changeLogFile}</changeLogFile>
-						</configuration>
-						<executions>
-							<execution>
-								<id>update-schema-sql</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>updateSQL</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.6.0</version>
-						<executions>
-							<execution>
-								<id>attach-artifacts</id>
-								<phase>process-test-resources</phase>
-								<goals>
-									<goal>attach-artifact</goal>
-								</goals>
-								<configuration>
-									<artifacts>
-										<artifact>
-											<file>${project.build.directory}/full-update.sql</file>
-											<type>sql</type>
-										</artifact>
-									</artifacts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-			<properties>
-				<db.docker.url>offline:postgresql?changeLogFile=target/databasechangelog.csv&amp;outputLiquibaseSql=true</db.docker.url>
-			</properties>
-		</profile>                       
+            <id>publish-sql</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>4.28.0</version>
+                        <configuration>
+                            <url>${db.docker.url}</url>
+                            <migrationSqlOutputFile>${project.build.directory}/full-update.sql</migrationSqlOutputFile>
+                            <outputFileEncoding>UTF-8</outputFileEncoding>
+                            <changeLogFile>${db.changeLogFile}</changeLogFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>update-schema-sql</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>updateSQL</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/full-update.sql</file>
+                                            <type>sql</type>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties>
+                <db.docker.url>
+                    offline:postgresql?changeLogFile=target/databasechangelog.csv&amp;outputLiquibaseSql=true
+                </db.docker.url>
+            </properties>
+        </profile>
     </profiles>
 
     <build>
@@ -114,54 +117,54 @@
             </plugins>
         </pluginManagement>
 
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.7.1</version>
-				<configuration>
-					<descriptors>assembly.xml</descriptors>
-					<finalName>${project.artifactId}</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.4.2</version>
-				<executions>
-					<execution>
-						<id>default-jar</id>
-						<!-- put the default-jar in the none phase to skip it from being created -->
-						<phase>none</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.1.2</version>
-				<goals>
-					<goal>deploy-file</goal>
-				</goals>
-				<configuration>
-					<repositoryId>${repository.id}</repositoryId>
-					<packaging>zip</packaging>
-					<generatePom>true</generatePom>
-					<url>${repository.url}</url>
-					<artifactId>${project.artifactId}</artifactId>
-					<groupId>${project.groupId}</groupId>
-					<version>${project.version}</version>
-					<file>target/liquibase.zip</file>
-				</configuration>
-			</plugin>
-	  </plugins>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.7.1</version>
+                <configuration>
+                    <descriptors>assembly.xml</descriptors>
+                    <finalName>${project.artifactId}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <!-- put the default-jar in the none phase to skip it from being created -->
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.2</version>
+                <goals>
+                    <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                    <repositoryId>${repository.id}</repositoryId>
+                    <packaging>zip</packaging>
+                    <generatePom>true</generatePom>
+                    <url>${repository.url}</url>
+                    <artifactId>${project.artifactId}</artifactId>
+                    <groupId>${project.groupId}</groupId>
+                    <version>${project.version}</version>
+                    <file>target/liquibase.zip</file>
+                </configuration>
+            </plugin>
+        </plugins>
 
     </build>
 </project>

@@ -37,15 +37,15 @@ import fish.focus.uvms.exchange.model.mapper.ExchangeModuleResponseMapper;
 public class ExchangeModuleJmsMock implements MessageListener {
 
     final static Logger LOG = LoggerFactory.getLogger(ExchangeModuleJmsMock.class);
-    
+
     @Inject
     RulesMessageProducerBean messageProducer;
-    
+
     @Override
     public void onMessage(Message message) {
         TextMessage textMessage = (TextMessage) message;
         try {
-            ExchangeBaseRequest  request = JAXBMarshaller.unmarshallTextMessage(textMessage, ExchangeBaseRequest .class);
+            ExchangeBaseRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, ExchangeBaseRequest.class);
             switch (request.getMethod()) {
                 case LIST_SERVICES:
                     String response = ExchangeModuleResponseMapper.mapServiceListResponse(new ArrayList<ServiceResponseType>());

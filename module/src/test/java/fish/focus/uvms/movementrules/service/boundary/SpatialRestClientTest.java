@@ -1,6 +1,7 @@
 package fish.focus.uvms.movementrules.service.boundary;
 
 import java.util.ArrayList;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -13,7 +14,7 @@ import fish.focus.uvms.movementrules.service.boundary.SpatialRestClient;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SpatialRestClientTest {
-    
+
     @Test
     public void populateAreasAndAreaTransitionsAISPosition() {
         MovementDetails movementDetails = new MovementDetails();
@@ -23,12 +24,12 @@ public class SpatialRestClientTest {
 
         SpatialRestClient spatialRestSpy = Mockito.spy(new SpatialRestClient());
         Mockito.doReturn(getAreaTransitionsDto()).when(spatialRestSpy).getEnrichmentAndTransitions(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-        
+
         spatialRestSpy.populateAreasAndAreaTransitions(movementDetails);
-        
+
         Mockito.verify(spatialRestSpy, Mockito.times(1)).getEnrichmentAndTransitions(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
-    
+
     @Test
     public void populateAreasAndAreaTransitionsNAFPosition() {
         MovementDetails movementDetails = new MovementDetails();
@@ -38,12 +39,12 @@ public class SpatialRestClientTest {
 
         SpatialRestClient spatialRestSpy = Mockito.spy(new SpatialRestClient());
         Mockito.doReturn(getAreaTransitionsDto()).when(spatialRestSpy).getEnrichmentAndTransitions(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-        
+
         spatialRestSpy.populateAreasAndAreaTransitions(movementDetails);
-        
+
         Mockito.verify(spatialRestSpy, Mockito.times(1)).getEnrichmentAndTransitions(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
-    
+
     @Test
     public void populateAreasAndAreaTransitionsNAFIdenticalPreviousPosition() {
         MovementDetails movementDetails = new MovementDetails();
@@ -55,12 +56,12 @@ public class SpatialRestClientTest {
 
         SpatialRestClient spatialRestSpy = Mockito.spy(new SpatialRestClient());
         Mockito.doReturn(getAreaTransitionsDto()).when(spatialRestSpy).getEnrichmentAndTransitions(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-        
+
         spatialRestSpy.populateAreasAndAreaTransitions(movementDetails);
-        
+
         Mockito.verify(spatialRestSpy, Mockito.times(1)).getEnrichmentAndTransitions(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
-    
+
     @Test
     public void populateAreasAndAreaTransitionsNAFDifferentPreviousPosition() {
         MovementDetails movementDetails = new MovementDetails();
@@ -72,12 +73,12 @@ public class SpatialRestClientTest {
 
         SpatialRestClient spatialRestSpy = Mockito.spy(new SpatialRestClient());
         Mockito.doReturn(getAreaTransitionsDto()).when(spatialRestSpy).getEnrichmentAndTransitions(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-        
+
         spatialRestSpy.populateAreasAndAreaTransitions(movementDetails);
-        
+
         Mockito.verify(spatialRestSpy, Mockito.times(2)).getEnrichmentAndTransitions(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
-    
+
     private AreaTransitionsDTO getAreaTransitionsDto() {
         AreaTransitionsDTO areaTransitions = new AreaTransitionsDTO();
         SpatialEnrichmentRS spatialEnrichmentRS = new SpatialEnrichmentRS();
@@ -86,5 +87,5 @@ public class SpatialRestClientTest {
         areaTransitions.setExitedAreas(new ArrayList<>());
         return areaTransitions;
     }
-    
+
 }

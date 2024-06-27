@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
+
 import fish.focus.schema.movementrules.asset.v1.AssetType;
 import fish.focus.schema.movementrules.customrule.v1.ActionType;
 import fish.focus.schema.movementrules.customrule.v1.AvailabilityType;
@@ -49,7 +50,7 @@ public class RulesTestHelper {
 
         return customRule;
     }
-    
+
     public static CustomRule createCompleteCustomRule() {
         CustomRule customRule = new CustomRule();
 
@@ -96,7 +97,7 @@ public class RulesTestHelper {
         return customRule;
     }
 
-    public static RuleAction createCreateTicketAction(CustomRule customRule){
+    public static RuleAction createCreateTicketAction(CustomRule customRule) {
         RuleAction action = new RuleAction();
         action.setAction(ActionType.CREATE_TICKET.value());
         action.setOrder(0);
@@ -104,7 +105,7 @@ public class RulesTestHelper {
 
         return action;
     }
-    
+
     public static CustomRuleQuery createBasicCustomRuleQuery() {
         CustomRuleQuery query = new CustomRuleQuery();
         query.setDynamic(true);
@@ -114,7 +115,7 @@ public class RulesTestHelper {
         query.setPagination(pagination);
         return query;
     }
-    
+
     public static MovementDetails createBasicMovementDetails() {
         MovementDetails movementDetails = new MovementDetails();
         movementDetails.setLatitude(56d);
@@ -136,7 +137,7 @@ public class RulesTestHelper {
         movementDetails.setExtAreaCodes(new ArrayList<>());
         return movementDetails;
     }
-    
+
     public static AlarmQuery getBasicAlarmQuery() {
         AlarmQuery query = new AlarmQuery();
         query.setDynamic(true);
@@ -156,10 +157,10 @@ public class RulesTestHelper {
         query.setPagination(pagination);
         return query;
     }
-    
+
     public static String getRandomIntegers(int length) {
         return new Random()
-                .ints(0,9)
+                .ints(0, 9)
                 .mapToObj(i -> String.valueOf(i))
                 .limit(length)
                 .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)

@@ -52,7 +52,7 @@ public class RulesEventMessageConsumerBean implements MessageListener {
     private Jsonb jsonb;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         JsonBConfigurator configurator = new JsonBConfigurator();
         jsonb = configurator.getContext(null);
     }
@@ -84,7 +84,7 @@ public class RulesEventMessageConsumerBean implements MessageListener {
                     break;
                 default:
                     LOG.error("[ Request method '{}' is not implemented ]", method.name());
-                     throw new UnsupportedOperationException("Method not implemented: " + method.name() + " Inbound message: " + textMessage.getText());
+                    throw new UnsupportedOperationException("Method not implemented: " + method.name() + " Inbound message: " + textMessage.getText());
             }
 
         } catch (JMSException e) {

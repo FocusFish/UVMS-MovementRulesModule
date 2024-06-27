@@ -150,7 +150,7 @@ public class ValidationServiceBeanTest extends TransactionalTests {
         long openTicketsAfter = validationService.getNumberOfOpenTickets(createdCustomRule.getUpdatedBy());
         assertThat(openTicketsAfter, is(openTicketsBefore + 1));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void aggregateRuleTriggeredTicketCountShouldIncreaseTest() throws Exception {
@@ -163,12 +163,12 @@ public class ValidationServiceBeanTest extends TransactionalTests {
 
         MovementDetails movementFact2 = RulesTestHelper.createBasicMovementDetails();
         validationService.customRuleTriggered(createdCustomRule.getName(), createdCustomRule.getGuid().toString(), movementFact2, "CREATE_TICKET,null");
-        
+
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementFact.getMovementGuid()));
         assertThat(tickets.size(), is(1));
         assertThat(tickets.get(0).getTicketCount(), is(2l));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void aggregateRuleTriggeredDateTriggeredShouldUpdateTest() throws Exception {
@@ -181,7 +181,7 @@ public class ValidationServiceBeanTest extends TransactionalTests {
 
         Instant firstTimestamp = rulesService.getCustomRuleByGuid(createdCustomRule.getGuid())
                 .getLastTriggered();
-        
+
         MovementDetails movementFact2 = RulesTestHelper.createBasicMovementDetails();
         validationService.customRuleTriggered(createdCustomRule.getName(), createdCustomRule.getGuid().toString(), movementFact2, "EMAIL,test@test.com");
 

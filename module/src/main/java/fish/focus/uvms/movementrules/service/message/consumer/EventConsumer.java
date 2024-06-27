@@ -11,6 +11,13 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.message.consumer;
 
+import fish.focus.uvms.asset.client.model.AssetDTO;
+import fish.focus.uvms.commons.date.JsonBConfigurator;
+import fish.focus.uvms.movementrules.service.dao.RulesDao;
+import fish.focus.uvms.movementrules.service.entity.PreviousReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
@@ -20,12 +27,6 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 import javax.json.bind.Jsonb;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import fish.focus.uvms.asset.client.model.AssetDTO;
-import fish.focus.uvms.commons.date.JsonBConfigurator;
-import fish.focus.uvms.movementrules.service.dao.RulesDao;
-import fish.focus.uvms.movementrules.service.entity.PreviousReport;
 
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
@@ -34,7 +35,7 @@ import fish.focus.uvms.movementrules.service.entity.PreviousReport;
         @ActivationConfigProperty(propertyName = "subscriptionName", propertyValue = "movement-rules"),
         @ActivationConfigProperty(propertyName = "clientId", propertyValue = "movement-rules"),
         @ActivationConfigProperty(propertyName = "messageSelector", propertyValue = "event='Updated Asset'")
-    })
+})
 public class EventConsumer implements MessageListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(EventConsumer.class);
@@ -46,7 +47,7 @@ public class EventConsumer implements MessageListener {
 
     @PostConstruct
     public void init() {
-        jsonb =  new JsonBConfigurator().getContext(null);
+        jsonb = new JsonBConfigurator().getContext(null);
     }
 
     @Override

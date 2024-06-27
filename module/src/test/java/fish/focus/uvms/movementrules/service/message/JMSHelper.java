@@ -31,12 +31,12 @@ public class JMSHelper {
 
     private static final long TIMEOUT = 5000;
 
-    @Resource(lookup = "java:/" + EVENT_STREAM_TOPIC)
-    private Destination eventStreamDestination;
-
     @Inject
     @JMSConnectionFactory("java:/ConnectionFactory")
     JMSContext context;
+
+    @Resource(lookup = "java:/" + EVENT_STREAM_TOPIC)
+    private Destination eventStreamDestination;
 
     public void sendMessageOnEventStream(String message, String eventName) {
         context.createProducer()

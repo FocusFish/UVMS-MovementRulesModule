@@ -54,7 +54,7 @@ public class DaoBeanMockerTest {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void testGetCustomRuleByGuid() {
         UUID guid = UUID.randomUUID();
         CustomRule entity = new CustomRule();
@@ -70,7 +70,7 @@ public class DaoBeanMockerTest {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void testUpdateCustomRule() {
         UUID id = UUID.randomUUID();
 
@@ -88,13 +88,13 @@ public class DaoBeanMockerTest {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void testDeleteCustomRule() {
         // em.remove(arg0);
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void testGetCustomRuleList() {
         TypedQuery<CustomRule> query = mock(TypedQuery.class);
         when(em.createNamedQuery(CustomRule.LIST_CUSTOM_RULES_BY_USER, CustomRule.class)).thenReturn(query);

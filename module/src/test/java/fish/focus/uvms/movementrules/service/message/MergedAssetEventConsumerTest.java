@@ -33,6 +33,19 @@ public class MergedAssetEventConsumerTest extends BuildRulesServiceDeployment {
     @Inject
     private JMSHelper jmsHelper;
 
+    private static PreviousReport getBasicPreviousReport(String oldUuid) {
+        PreviousReport previousReport = new PreviousReport();
+
+        previousReport.setAssetGuid(oldUuid);
+        previousReport.setMobTermGuid(UUID.randomUUID());
+        previousReport.setMovementGuid(UUID.randomUUID());
+        previousReport.setPositionTime(Instant.now());
+        previousReport.setUpdated(Instant.now());
+        previousReport.setUpdatedBy(MergedAssetEventConsumerTest.class.getSimpleName());
+
+        return previousReport;
+    }
+
     @Test
     @OperateOnDeployment("normal")
     public void noOperationWhenNoPreviousReport() {
@@ -66,18 +79,5 @@ public class MergedAssetEventConsumerTest extends BuildRulesServiceDeployment {
         jmsHelper.sendMessageOnEventStream(assetMergedMessage, MERGED_ASSET);
 
         await().until(() -> rulesDao.getPreviousReportByAssetGuid(oldUuid), is(nullValue()));
-    }
-
-    private static PreviousReport getBasicPreviousReport(String oldUuid) {
-        PreviousReport previousReport = new PreviousReport();
-
-        previousReport.setAssetGuid(oldUuid);
-        previousReport.setMobTermGuid(UUID.randomUUID());
-        previousReport.setMovementGuid(UUID.randomUUID());
-        previousReport.setPositionTime(Instant.now());
-        previousReport.setUpdated(Instant.now());
-        previousReport.setUpdatedBy(MergedAssetEventConsumerTest.class.getSimpleName());
-
-        return previousReport;
     }
 }

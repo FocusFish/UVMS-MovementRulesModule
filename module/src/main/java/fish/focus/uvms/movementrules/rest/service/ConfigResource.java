@@ -12,9 +12,9 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package fish.focus.uvms.movementrules.rest.service;
 
 import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
+import fish.focus.uvms.movementrules.service.bean.ConfigServiceBean;
 import fish.focus.uvms.rest.security.RequiresFeature;
 import fish.focus.uvms.rest.security.UnionVMSFeature;
-import fish.focus.uvms.movementrules.service.bean.ConfigServiceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

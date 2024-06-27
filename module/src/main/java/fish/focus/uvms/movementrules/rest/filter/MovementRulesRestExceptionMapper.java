@@ -15,16 +15,17 @@ public class MovementRulesRestExceptionMapper implements ExceptionMapper<Excepti
 
 
     private static final Logger LOG = LoggerFactory.getLogger(MovementRulesRestExceptionMapper.class);
+
     public MovementRulesRestExceptionMapper() {
         super();
     }
 
     @Override
     public Response toResponse(Exception exception) {
-        if(exception instanceof AccessDeniedException){
+        if (exception instanceof AccessDeniedException) {
             AppError error = new AppError(Response.Status.FORBIDDEN.getStatusCode(), ExceptionUtils.getRootCauseMessage(exception));
             return Response.ok(error).header("MDC", MDC.get("requestId")).build();
-        }else {
+        } else {
             AppError error = new AppError(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), ExceptionUtils.getRootCauseMessage(exception));
             return Response.ok(error).header("MDC", MDC.get("requestId")).build();
         }

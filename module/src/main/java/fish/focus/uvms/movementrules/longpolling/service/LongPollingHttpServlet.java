@@ -17,6 +17,7 @@ import fish.focus.uvms.movementrules.service.dto.EventTicket;
 import fish.focus.uvms.movementrules.service.event.TicketCountEvent;
 import fish.focus.uvms.movementrules.service.event.TicketEvent;
 import fish.focus.uvms.movementrules.service.event.TicketUpdateEvent;
+
 import javax.ejb.EJB;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
@@ -34,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
-@WebServlet(asyncSupported = true, urlPatterns = { LongPollingConstants.TICKET_UPDATE_PATH, LongPollingConstants.TICKET_COUNT_PATH })
+@WebServlet(asyncSupported = true, urlPatterns = {LongPollingConstants.TICKET_UPDATE_PATH, LongPollingConstants.TICKET_COUNT_PATH})
 public class LongPollingHttpServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -59,7 +60,7 @@ public class LongPollingHttpServlet extends HttpServlet {
 
         asyncContexts.add(ctx, req.getServletPath());
     }
-    
+
     public void observeTicketUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) @TicketEvent EventTicket eventTicket) throws IOException {
         UUID guid = eventTicket.getTicket().getGuid();
         completePoll(LongPollingConstants.TICKET_UPDATE_PATH, createJsonMessage(guid.toString(), LongPollingConstants.ACTION_CREATED));
@@ -127,7 +128,5 @@ public class LongPollingHttpServlet extends HttpServlet {
         public void onStartAsync(AsyncEvent event) throws IOException {
             // Do nothing
         }
-
     }
-
 }

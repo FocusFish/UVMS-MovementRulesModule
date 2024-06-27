@@ -13,8 +13,10 @@
             <xsd:element name="archived" type="xsd:boolean"/>
             <xsd:element name="aggregateInvocations" type="xsd:boolean"/>
             <xsd:element name="description" type="xsd:string"/>
-            <xsd:element name="timeIntervals" type="customrule:CustomRuleIntervalType" minOccurs="1" maxOccurs="unbounded"/>
-            <xsd:element name="definitions" type="customrule:CustomRuleSegmentType" minOccurs="1" maxOccurs="unbounded"/>
+            <xsd:element name="timeIntervals" type="customrule:CustomRuleIntervalType" minOccurs="1"
+                         maxOccurs="unbounded"/>
+            <xsd:element name="definitions" type="customrule:CustomRuleSegmentType" minOccurs="1"
+                         maxOccurs="unbounded"/>
             <xsd:element name="actions" type="customrule:CustomRuleActionType" minOccurs="1" maxOccurs="unbounded"/>
             <xsd:element name="subscriptions" type="customrule:SubscriptionType" minOccurs="1" maxOccurs="unbounded"/>
             <xsd:element name="lastTriggered" type="xsd:string"/>
@@ -216,7 +218,6 @@
     </xsd:simpleType>
 
 
-
     <xsd:complexType name="UpdateSubscriptionType">
         <xsd:sequence>
             <xsd:element name="ruleGuid" type="xsd:string"/>
@@ -231,10 +232,6 @@
             <xsd:enumeration value="REMOVE"/>
         </xsd:restriction>
     </xsd:simpleType>
-
-
-
-
 
 
 </xsd:schema>

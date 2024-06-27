@@ -2,7 +2,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             targetNamespace="urn:exchange.movementrules.schema.focus.fish:v1"
             xmlns="http://schemas.xmlsoap.org/wsdl/">
-    
+
 
     <xsd:simpleType name="PluginType">
         <xsd:restriction base="xsd:string">
@@ -16,6 +16,6 @@
             <xsd:enumeration value="BELGIAN_ACTIVITY"/>
         </xsd:restriction>
     </xsd:simpleType>
-    
-  
+
+
 </xsd:schema>

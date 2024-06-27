@@ -1,6 +1,18 @@
 package fish.focus.uvms.movementrules.rest.service;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import fish.focus.schema.movementrules.customrule.v1.AvailabilityType;
+import fish.focus.schema.movementrules.customrule.v1.SubscriptionTypeType;
+import fish.focus.uvms.movementrules.service.dto.EventTicket;
+import fish.focus.uvms.movementrules.service.entity.RuleSubscription;
+import fish.focus.uvms.movementrules.service.entity.Ticket;
+import fish.focus.uvms.movementrules.service.event.TicketEvent;
+import fish.focus.uvms.movementrules.service.event.TicketUpdateEvent;
+import fish.focus.uvms.movementrules.service.mapper.TicketMapper;
+import fish.focus.uvms.rest.security.RequiresFeature;
+import fish.focus.uvms.rest.security.UnionVMSFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
@@ -13,18 +25,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.sse.OutboundSseEvent;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import fish.focus.schema.movementrules.customrule.v1.AvailabilityType;
-import fish.focus.schema.movementrules.customrule.v1.SubscriptionTypeType;
-import fish.focus.uvms.rest.security.RequiresFeature;
-import fish.focus.uvms.rest.security.UnionVMSFeature;
-import fish.focus.uvms.movementrules.service.dto.EventTicket;
-import fish.focus.uvms.movementrules.service.entity.RuleSubscription;
-import fish.focus.uvms.movementrules.service.entity.Ticket;
-import fish.focus.uvms.movementrules.service.event.TicketEvent;
-import fish.focus.uvms.movementrules.service.event.TicketUpdateEvent;
-import fish.focus.uvms.movementrules.service.mapper.TicketMapper;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @ApplicationScoped
 @Path("sse")
@@ -37,7 +38,7 @@ public class SSEResource {
 
     @Context
     private Sse sse;
-    
+
     @GET
     @Path("subscribe")
     @Produces(MediaType.SERVER_SENT_EVENTS)
@@ -51,34 +52,34 @@ public class SSEResource {
     public void updatedTicket(@Observes(during = TransactionPhase.AFTER_SUCCESS) @TicketUpdateEvent EventTicket ticket) {
         sendEvent(ticket, "TicketUpdate");
     }
-    
+
     public void createdTicket(@Observes(during = TransactionPhase.AFTER_SUCCESS) @TicketEvent EventTicket ticket) {
         sendEvent(ticket, "Ticket");
     }
-    
+
     private void sendEvent(EventTicket eventTicket, String eventName) {
         if (eventTicket.getCustomRule() == null) {
             LOG.error("Rule in eventTicket {} is null", eventTicket.getTicket().getRuleName());
             return;
         }
         OutboundSseEvent sseEvent = createSseEvent(eventTicket.getTicket(), eventName);
-        
+
         userSinks.stream().forEach(userSink -> {
             if (userSink.getEventSink().isClosed()) {
                 userSinks.remove(userSink);
             }
         });
-        
+
         userSinks.stream().forEach(userSink -> {
             for (RuleSubscription subscription : eventTicket.getCustomRule().getRuleSubscriptionList()) {
-                if ((userSink.getUser().equals(subscription.getOwner()) && subscription.getType().equals(SubscriptionTypeType.TICKET.value())) 
+                if ((userSink.getUser().equals(subscription.getOwner()) && subscription.getType().equals(SubscriptionTypeType.TICKET.value()))
                         || eventTicket.getCustomRule().getAvailability().equals(AvailabilityType.GLOBAL.value())) {
                     LOG.debug("Broadcasting to {}", subscription.getOwner());
                     userSink.getEventSink().send(sseEvent).whenComplete((object, error) -> {
                         if (error != null) {
                             userSinks.remove(userSink);
                         }
-                     });
+                    });
                 }
             }
         });
@@ -97,7 +98,7 @@ public class SSEResource {
     private class UserSseEventSink {
         private String user;
         private SseEventSink eventSink;
-        
+
         public UserSseEventSink(String user, SseEventSink sseEventSink) {
             this.user = user;
             this.eventSink = sseEventSink;
@@ -106,7 +107,7 @@ public class SSEResource {
         public String getUser() {
             return user;
         }
-        
+
         public SseEventSink getEventSink() {
             return eventSink;
         }

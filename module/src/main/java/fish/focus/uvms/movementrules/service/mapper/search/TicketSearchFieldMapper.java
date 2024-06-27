@@ -27,8 +27,9 @@ import java.util.Map.Entry;
 public class TicketSearchFieldMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TicketSearchFieldMapper.class);
-    
-    private TicketSearchFieldMapper() {}
+
+    private TicketSearchFieldMapper() {
+    }
 
     /**
      * Creates a search SQL based on the search fields
@@ -77,7 +78,6 @@ public class TicketSearchFieldMapper {
 
 
     /**
-     *
      * Creates the complete search SQL with joins and sets the values based on
      * the criteria
      *
@@ -173,7 +173,6 @@ public class TicketSearchFieldMapper {
     }
 
     /**
-     *
      * Creates at String that sets values based on what class the SearchValue
      * has. A String class returns [ = 'value' ] A Integer returns [ = value ]
      * Date is specifically handled and can return [ >= 'datavalue' ] or [ <=
@@ -222,9 +221,8 @@ public class TicketSearchFieldMapper {
     }
 
     /**
-     *
      * Builds a table alias for the query based on the search field
-     *
+     * <p>
      * EG [ theTableAlias.theColumnName ]
      *
      * @param field
@@ -237,7 +235,6 @@ public class TicketSearchFieldMapper {
     }
 
     /**
-     *
      * Takes all the search values and categorizes them in lists to a key
      * according to the SearchField
      *
@@ -257,7 +254,6 @@ public class TicketSearchFieldMapper {
     }
 
     /**
-     *
      * Converts List<ListCriteria> to List<SearchValue> so that a JPQL query can
      * be built based on the criteria
      *
@@ -275,7 +271,7 @@ public class TicketSearchFieldMapper {
         for (TicketListCriteria criteria : criteriaList) {
             try {
                 TicketSearchField field = mapCriteria(criteria.getKey());
-                if(TicketSearchField.FROM_DATE.equals(field) || TicketSearchField.TO_DATE.equals(field)) {
+                if (TicketSearchField.FROM_DATE.equals(field) || TicketSearchField.TO_DATE.equals(field)) {
                     searchFields.add(new TicketSearchValue(field, DateUtils.dateToHumanReadableString(DateUtils.stringToDate(criteria.getValue()))));   //since the sql queries can not handle timestamps
                 } else {
                     searchFields.add(new TicketSearchValue(field, criteria.getValue()));
@@ -289,7 +285,6 @@ public class TicketSearchFieldMapper {
     }
 
     /**
-     *
      * Maps the Search Key to a SearchField.
      *
      * @param key

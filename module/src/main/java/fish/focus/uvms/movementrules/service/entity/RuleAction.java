@@ -37,7 +37,7 @@ public class RuleAction implements Serializable {
 
     @Column(name = "action_target")
     private String target;
-    
+
     @Column(name = "action_value")
     private String value;
 
@@ -48,7 +48,7 @@ public class RuleAction implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private CustomRule customRule;
 
-    public RuleAction copy(CustomRule newCustomRule){
+    public RuleAction copy(CustomRule newCustomRule) {
         RuleAction copy = new RuleAction();
         copy.setAction(action);
         copy.setTarget(target);
@@ -70,7 +70,7 @@ public class RuleAction implements Serializable {
     public String getAction() {
         return action;
     }
-    
+
     public void setAction(String action) {
         this.action = action;
     }
@@ -123,7 +123,7 @@ public class RuleAction implements Serializable {
             } else if (action == null && other.action != null) {
                 return false;
             }
-            
+
             if (target != null && !target.equals(other.target)) {
                 return false;
             } else if (target == null && other.target != null) {

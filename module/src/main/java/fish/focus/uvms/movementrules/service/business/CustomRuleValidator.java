@@ -38,7 +38,7 @@ public class CustomRuleValidator {
     }
 
     private static boolean isTimeIntervalsValid(CustomRuleType customRule) {
-        if(customRule.getTimeIntervals() != null && !customRule.getTimeIntervals().isEmpty()) {
+        if (customRule.getTimeIntervals() != null && !customRule.getTimeIntervals().isEmpty()) {
             for (CustomRuleIntervalType intervalType : customRule.getTimeIntervals()) {
                 if (intervalType.getStart() == null || intervalType.getStart().isEmpty() ||
                         intervalType.getEnd() == null || intervalType.getEnd().isEmpty()) {
@@ -59,7 +59,7 @@ public class CustomRuleValidator {
     }
 
     private static boolean isDefinitionsValid(CustomRuleType customRule) {
-        if(customRule.getDefinitions() == null || customRule.getDefinitions().isEmpty()) {
+        if (customRule.getDefinitions() == null || customRule.getDefinitions().isEmpty()) {
             return false;
         }
         int startOperators = 0;
@@ -68,8 +68,8 @@ public class CustomRuleValidator {
         for (int i = 0; i < customRule.getDefinitions().size(); i++) {
             CustomRuleSegmentType segment = customRule.getDefinitions().get(i);
 
-            if(!(segment.getStartOperator().startsWith("(") || segment.getStartOperator().isEmpty()) ||
-                    !(segment.getEndOperator().startsWith(")") || segment.getEndOperator().isEmpty())){
+            if (!(segment.getStartOperator().startsWith("(") || segment.getStartOperator().isEmpty()) ||
+                    !(segment.getEndOperator().startsWith(")") || segment.getEndOperator().isEmpty())) {
                 return false;
             }
             startOperators += segment.getStartOperator().length();
@@ -88,9 +88,9 @@ public class CustomRuleValidator {
     }
 
     private static boolean isActionsValid(CustomRuleType customRule) {
-        if(customRule.getActions() != null && !customRule.getActions().isEmpty()) {
-            for(CustomRuleActionType action : customRule.getActions()) {
-                if(action.getAction().equals(ActionType.EMAIL)) {
+        if (customRule.getActions() != null && !customRule.getActions().isEmpty()) {
+            for (CustomRuleActionType action : customRule.getActions()) {
+                if (action.getAction().equals(ActionType.EMAIL)) {
                     Pattern VALID_EMAIL_REGEX = Pattern.compile(
                             "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
                     Matcher matcher = VALID_EMAIL_REGEX.matcher(action.getValue());

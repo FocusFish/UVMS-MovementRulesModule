@@ -12,17 +12,18 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 
 package fish.focus.uvms.movementrules.service.message.consumer;
 
+import fish.focus.uvms.commons.message.api.MessageConstants;
+import fish.focus.uvms.commons.message.impl.AbstractConsumer;
+import fish.focus.uvms.config.exception.ConfigMessageException;
+import fish.focus.uvms.config.message.ConfigMessageConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Queue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import fish.focus.uvms.commons.message.api.MessageConstants;
-import fish.focus.uvms.commons.message.impl.AbstractConsumer;
-import fish.focus.uvms.config.exception.ConfigMessageException;
-import fish.focus.uvms.config.message.ConfigMessageConsumer;
 
 @Stateless
 public class RulesResponseConsumerBean extends AbstractConsumer implements RulesResponseConsumer, ConfigMessageConsumer {
@@ -31,7 +32,7 @@ public class RulesResponseConsumerBean extends AbstractConsumer implements Rules
 
     private static final long CONFIG_TIMEOUT = 600000L;
 
-    @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_MOVEMENTRULES)
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_MOVEMENTRULES)
     private Queue destination;
 
     @Override

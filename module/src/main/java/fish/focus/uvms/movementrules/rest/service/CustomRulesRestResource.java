@@ -15,13 +15,13 @@ import fish.focus.schema.movementrules.customrule.v1.CustomRuleType;
 import fish.focus.schema.movementrules.customrule.v1.UpdateSubscriptionType;
 import fish.focus.schema.movementrules.module.v1.GetCustomRuleListByQueryResponse;
 import fish.focus.schema.movementrules.search.v1.CustomRuleQuery;
-import fish.focus.uvms.rest.security.RequiresFeature;
-import fish.focus.uvms.rest.security.UnionVMSFeature;
-import fish.focus.uvms.user.model.exception.ModelMarshallException;
 import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
 import fish.focus.uvms.movementrules.service.dto.CustomRuleListResponseDto;
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import fish.focus.uvms.movementrules.service.mapper.CustomRuleMapper;
+import fish.focus.uvms.rest.security.RequiresFeature;
+import fish.focus.uvms.rest.security.UnionVMSFeature;
+import fish.focus.uvms.user.model.exception.ModelMarshallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +57,7 @@ public class CustomRulesRestResource {
     @RequiresFeature(UnionVMSFeature.manageAlarmRules)
     public Response createCustomRule(CustomRuleType customRule) throws JMSException, ModelMarshallException, AccessDeniedException {
         LOG.info("Create invoked in rest layer");
-        if(rulesService.isValid(customRule)) {
+        if (rulesService.isValid(customRule)) {
             try {
                 CustomRule entity = CustomRuleMapper.toCustomRuleEntity(customRule);
                 CustomRule created = rulesService.createCustomRule(entity, UnionVMSFeature.manageGlobalAlarmsRules.name(),
@@ -128,7 +128,7 @@ public class CustomRulesRestResource {
     @RequiresFeature(UnionVMSFeature.manageAlarmRules)
     public Response updateCustomRule(final CustomRuleType customRuleType) throws AccessDeniedException, JMSException, ModelMarshallException {
         LOG.info("Update custom rule invoked in rest layer");
-        if(rulesService.isValid(customRuleType)) {
+        if (rulesService.isValid(customRuleType)) {
             try {
                 CustomRule customRule = CustomRuleMapper.toCustomRuleEntity(customRuleType);
                 CustomRule updated = rulesService.updateCustomRule(customRule, UnionVMSFeature.manageGlobalAlarmsRules.name(),

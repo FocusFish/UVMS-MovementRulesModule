@@ -11,26 +11,24 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.mapper;
 
+import fish.focus.uvms.movementrules.model.dto.MovementDetails;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 
 public class EmailMapper {
-    
-    private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter
-                                                                    .ofPattern("yyyy-MM-dd HH:mm:ss X")
-                                                                    .withZone(ZoneId.of("UTC"));
 
-    private EmailMapper() {}
-    
+    private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd HH:mm:ss X")
+            .withZone(ZoneId.of("UTC"));
+
+    private EmailMapper() {
+    }
+
     public static String buildSubject(MovementDetails movementDetails) {
         List<String> assetIdentifiers = new ArrayList<>();
         if (movementDetails.getExternalMarking() != null) {
@@ -141,14 +139,14 @@ public class EmailMapper {
         positionBuilder.append(String.join("/", areas.getOrDefault("PORTAREA", Arrays.asList("-"))));
         for (Entry<String, List<String>> entry : areas.entrySet()) {
             positionBuilder.append("<br>&nbsp;&nbsp;&nbsp;&nbsp;")
-            .append(entry.getKey())
-            .append(" : ");
+                    .append(entry.getKey())
+                    .append(" : ");
             positionBuilder.append(String.join("/", entry.getValue()));
         }
 
         return positionBuilder.toString();
     }
-    
+
     private static String getLatitudeString(Double latitude) {
         String direction = null;
         if (latitude < 0) {
@@ -170,11 +168,11 @@ public class EmailMapper {
         }
         return getCoordString(longitude, direction);
     }
-    
+
     private static String getCoordString(Double coord, String direction) {
         int deg = (int) Math.floor(coord);
         double min = (coord - deg) * 60;
-        
+
         StringBuilder sb = new StringBuilder();
         sb.append(deg).append('°');
         sb.append(BigDecimal.valueOf(min).setScale(3, RoundingMode.HALF_UP));
@@ -182,26 +180,26 @@ public class EmailMapper {
         sb.append(direction);
         return sb.toString();
     }
-    
+
     private static String ignoreNull(Double value, int scale) {
         if (value == null) {
             return "-";
         }
         return BigDecimal.valueOf(value).setScale(scale, RoundingMode.HALF_UP).toString();
     }
-    
+
     private static String ignoreNull(String value) {
         if (value == null) {
             return "-";
         }
         return value;
     }
-    
+
     private static Map<String, List<String>> getAreaMap(List<String> codes, List<String> types) {
         Map<String, List<String>> areaMap = new HashMap<>();
         for (int i = 0; i < codes.size(); i++) {
             areaMap.computeIfAbsent(types.get(i), k -> new ArrayList<String>())
-                   .add(codes.get(i));
+                    .add(codes.get(i));
         }
         return areaMap;
     }

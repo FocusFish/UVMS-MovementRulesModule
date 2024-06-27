@@ -14,8 +14,6 @@ package fish.focus.uvms.movementrules.service.mapper;
 import fish.focus.schema.movementrules.customrule.v1.*;
 import fish.focus.uvms.commons.date.DateUtils;
 import fish.focus.uvms.movementrules.service.entity.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -24,9 +22,8 @@ import java.util.UUID;
 
 public class CustomRuleMapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CustomRuleMapper.class);
-
-    private CustomRuleMapper() {};
+    private CustomRuleMapper() {
+    }
 
     public static CustomRuleType toCustomRuleType(CustomRuleType customRuleType, CustomRule customRuleEntity) {
         // Base
@@ -111,7 +108,7 @@ public class CustomRuleMapper {
         Instant now = Instant.now();
         // Base
         customRuleEntity.setName(customRuleType.getName());
-        if(customRuleType.getGuid() != null) {
+        if (customRuleType.getGuid() != null) {
             customRuleEntity.setGuid(UUID.fromString(customRuleType.getGuid()));
         }
         customRuleEntity.setAvailability(customRuleType.getAvailability().value());
@@ -141,7 +138,7 @@ public class CustomRuleMapper {
                     ruleSegment.setCondition(customRuleSegmentType.getCondition().name());
                 }
                 // Remove quotations from the value, since it totally messes up the rule engine
-                ruleSegment.setValue(customRuleSegmentType.getValue().replace("\"",""));
+                ruleSegment.setValue(customRuleSegmentType.getValue().replace("\"", ""));
                 ruleSegment.setEndOperator(customRuleSegmentType.getEndOperator());
                 if (customRuleSegmentType.getLogicBoolOperator() != null) {
                     ruleSegment.setLogicOperator(customRuleSegmentType.getLogicBoolOperator().name());
@@ -197,7 +194,7 @@ public class CustomRuleMapper {
         CustomRuleType customRuleType = new CustomRuleType();
         return toCustomRuleType(customRuleType, customRuleEntity);
     }
-    
+
     public static List<CustomRuleType> toCustomRuleTypeList(List<CustomRule> customRules) {
         List<CustomRuleType> customRuleTypes = new ArrayList<>();
         for (CustomRule customRule : customRules) {
