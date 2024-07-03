@@ -11,21 +11,25 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.business;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import fish.focus.uvms.asset.client.AssetClient;
+import fish.focus.uvms.config.service.ParameterService;
+import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
+import fish.focus.uvms.movementrules.service.bean.ValidationServiceBean;
+import fish.focus.uvms.movementrules.service.dao.RulesDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import fish.focus.uvms.config.service.ParameterService;
-import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
-import fish.focus.uvms.movementrules.service.bean.ValidationServiceBean;
+import javax.inject.Inject;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 @Startup
 @Singleton
@@ -42,9 +46,15 @@ public class RulesTimerBean {
 
     @EJB
     private RulesValidator rulesValidator;
-    
+
     @EJB
     private ParameterService parameterService;
+
+    @Inject
+    private AssetClient assetClient;
+
+    @EJB
+    private RulesDao rulesDao;
 
     private ScheduledFuture<?> comm;
 
@@ -54,7 +64,7 @@ public class RulesTimerBean {
     public void postConstruct() {
         LOG.debug("RulesTimerBean init");
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService);
+        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
         comm = executorService.scheduleWithFixedDelay(checkCommunicationTask, 10, 10, TimeUnit.MINUTES);
         CheckRulesChangesTask checkRulesChangesTask = new CheckRulesChangesTask(validationService, rulesValidator, rulesService);
         changes = executorService.scheduleWithFixedDelay(checkRulesChangesTask, 10, 10, TimeUnit.MINUTES);
@@ -69,5 +79,4 @@ public class RulesTimerBean {
             changes.cancel(true);
         }
     }
-
 }
