@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunAsClient
 @RunWith(Arquillian.class)
@@ -36,7 +36,6 @@ public class RulesEventMessageConsumerBeanTest extends BuildRulesServiceDeployme
 
     @Before
     public void clearExchangeQueue() throws Exception {
-
         jmsHelper.clearQueue(MessageConstants.QUEUE_EXCHANGE_EVENT_NAME);
         jmsHelper.clearQueue(MessageConstants.QUEUE_MOVEMENTRULES_EVENT_NAME);
     }

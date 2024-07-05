@@ -8,7 +8,6 @@ import fish.focus.uvms.movementrules.service.RulesTestHelper;
 import fish.focus.uvms.movementrules.service.TransactionalTests;
 import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
 import fish.focus.uvms.movementrules.service.bean.ValidationServiceBean;
-import fish.focus.uvms.movementrules.service.business.RulesValidator;
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import fish.focus.uvms.movementrules.service.entity.RuleAction;
 import fish.focus.uvms.movementrules.service.entity.RuleSegment;
@@ -19,11 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
+import javax.transaction.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -33,7 +28,9 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class RulesValidatorTest extends TransactionalTests {

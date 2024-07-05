@@ -5,8 +5,6 @@ import fish.focus.uvms.commons.date.DateUtils;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import fish.focus.uvms.movementrules.service.RulesTestHelper;
 import fish.focus.uvms.movementrules.service.TransactionalTests;
-import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
-import fish.focus.uvms.movementrules.service.bean.ValidationServiceBean;
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import fish.focus.uvms.movementrules.service.entity.RuleAction;
 import fish.focus.uvms.movementrules.service.entity.Ticket;
@@ -23,7 +21,9 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class ValidationServiceBeanTest extends TransactionalTests {

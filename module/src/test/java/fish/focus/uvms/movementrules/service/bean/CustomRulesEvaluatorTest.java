@@ -3,15 +3,11 @@ package fish.focus.uvms.movementrules.service.bean;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import fish.focus.uvms.movementrules.service.RulesTestHelper;
 import fish.focus.uvms.movementrules.service.TransactionalTests;
-import fish.focus.uvms.movementrules.service.bean.CustomRulesEvaluator;
-import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
 import fish.focus.uvms.movementrules.service.business.RulesValidator;
-import fish.focus.uvms.movementrules.service.dao.RulesDao;
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import fish.focus.uvms.movementrules.service.entity.PreviousReport;
 import fish.focus.uvms.movementrules.service.entity.RuleSegment;
 import fish.focus.uvms.movementrules.service.entity.Ticket;
-import org.hamcrest.CoreMatchers;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
@@ -19,11 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
+import javax.transaction.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(Arquillian.class)
 public class CustomRulesEvaluatorTest extends TransactionalTests {
@@ -90,7 +82,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         customRulesEvaluator.evaluate(movementDetails);
         
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
-        assertThat(tickets.size(), CoreMatchers.is(1));
+        assertThat(tickets.size(), is(1));
     }
     
     @Test
@@ -118,7 +110,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         customRulesEvaluator.evaluate(movementDetails);
         
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
-        assertThat(tickets.size(), CoreMatchers.is(1));
+        assertThat(tickets.size(), is(1));
     }
     
     @Test
@@ -146,7 +138,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         customRulesEvaluator.evaluate(movementDetails);
         
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
-        assertThat(tickets.size(), CoreMatchers.is(1));
+        assertThat(tickets.size(), is(1));
     }
     
     @Test
@@ -177,7 +169,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         customRulesEvaluator.evaluate(movementDetails);
         
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
-        assertThat(tickets.size(), CoreMatchers.is(1));
+        assertThat(tickets.size(), is(1));
     }
     
     @Test
@@ -208,7 +200,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         customRulesEvaluator.evaluate(movementDetails);
         
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
-        assertThat(tickets.size(), CoreMatchers.is(1));
+        assertThat(tickets.size(), is(1));
     }
     
     @Test
@@ -241,7 +233,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         customRulesEvaluator.evaluate(movementDetails);
         
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
-        assertThat(tickets.size(), CoreMatchers.is(1));
+        assertThat(tickets.size(), is(1));
     }
     
     @Test
@@ -274,7 +266,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         customRulesEvaluator.evaluate(movementDetails);
         
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
-        assertThat(tickets.size(), CoreMatchers.is(1));
+        assertThat(tickets.size(), is(1));
     }
     
     private MovementDetails getMovementDetails() {

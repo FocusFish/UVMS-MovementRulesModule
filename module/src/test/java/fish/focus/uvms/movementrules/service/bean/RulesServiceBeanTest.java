@@ -7,14 +7,12 @@ import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
 import fish.focus.schema.movementrules.ticketrule.v1.TicketAndRuleType;
 import fish.focus.uvms.movementrules.service.RulesTestHelper;
 import fish.focus.uvms.movementrules.service.TransactionalTests;
-import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
 import fish.focus.uvms.movementrules.service.dao.RulesDao;
 import fish.focus.uvms.movementrules.service.dto.CustomRuleListResponseDto;
 import fish.focus.uvms.movementrules.service.dto.TicketListResponseDto;
 import fish.focus.uvms.movementrules.service.entity.*;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,6 +28,7 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
@@ -40,41 +39,41 @@ public class RulesServiceBeanTest extends TransactionalTests {
 
     @Inject
     private RulesDao rulesDao;
-    
+
     @Test
     @OperateOnDeployment("normal")
-    public void createCustomRuleTest() throws Exception{
+    public void createCustomRuleTest() throws Exception {
         CustomRule input = getCompleteNewCustomRule();
         input.setAvailability(AvailabilityType.GLOBAL.value());
 
         try {
             rulesService.createCustomRule(input, "test", "test");
             fail();
-        }catch (AccessDeniedException e){
-            Assert.assertTrue(true);
+        } catch (AccessDeniedException e) {
+            assertTrue(true);
         }
 
         try {
             rulesService.createCustomRule(input, "test", null);
             fail();
-        }catch (AccessDeniedException e){
-            Assert.assertTrue(true);
+        } catch (AccessDeniedException e) {
+            assertTrue(true);
         }
 
         input.setAvailability((AvailabilityType.PRIVATE.value()));
         CustomRule output = rulesService.createCustomRule(input, "test", "test");
-        Assert.assertNotNull(output.getGuid());
+        assertNotNull(output.getGuid());
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void createCustomRuleWithIntervalTest() throws Exception {
         CustomRule customRule = getCompleteNewCustomRule();
         Interval interval = new Interval();
         interval.setStart(Instant.now().minus(1, ChronoUnit.HOURS));
         interval.setEnd(Instant.now());
         customRule.getIntervals().add(interval);
-        
+
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
         assertThat(createdCustomRule.getGuid(), is(notNullValue()));
         UUID createdIntervalId = createdCustomRule.getIntervals().get(0).getId();
@@ -82,11 +81,11 @@ public class RulesServiceBeanTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void getCustomRuleByDummyGuidTest() {   //a get with proper input exists among the rest tests
-            assertNull(rulesService.getCustomRuleByGuid(UUID.randomUUID()));
+        assertNull(rulesService.getCustomRuleByGuid(UUID.randomUUID()));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void getCustomRulesByUserTest() throws Exception {
@@ -94,9 +93,9 @@ public class RulesServiceBeanTest extends TransactionalTests {
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
 
         List<CustomRule> customRulesByUser = rulesService.getCustomRulesByUser(createdCustomRule.getUpdatedBy());
-        assertTrue(customRulesByUser.size() > 0);
+        assertFalse(customRulesByUser.isEmpty());
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void getRunnableCustomRulesTest() throws Exception {
@@ -124,7 +123,7 @@ public class RulesServiceBeanTest extends TransactionalTests {
         List<CustomRule> runnableCustomRulesAfterDelete = rulesService.getRunnableCustomRules();
         assertThat(runnableCustomRulesAfterDelete.size(), is(runnableCustomRulesBefore.size()));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void getCustomRuleListByQueryGuidTest() throws Exception {
@@ -230,8 +229,8 @@ public class RulesServiceBeanTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
-    public void updateDummyCustomRuleTest() throws Exception{      //an update with proper input/execution exists among the rest tests
+    @OperateOnDeployment("normal")
+    public void updateDummyCustomRuleTest() throws Exception {      //an update with proper input/execution exists among the rest tests
         CustomRule input = getCompleteNewCustomRule();
         input.setAvailability(AvailabilityType.GLOBAL.value());
         input.setGuid(null);
@@ -240,32 +239,32 @@ public class RulesServiceBeanTest extends TransactionalTests {
         try {
             rulesService.updateCustomRule(input, "test", "test");
             fail();
-        }catch (AccessDeniedException e){
-            Assert.assertTrue(true);
+        } catch (AccessDeniedException e) {
+            assertTrue(true);
         }
         input.setAvailability(AvailabilityType.PRIVATE.value());
 
         //no guid
-        try{
+        try {
             rulesService.updateCustomRule(input, "test", "test");
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
         //null as input, funnily enough they die at different places......
-        try{
+        try {
             rulesService.updateCustomRule(null);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
-        try{
+        try {
             rulesService.updateCustomRule(null, "test", "test");
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
         input.setGuid(UUID.randomUUID()); //dummy guid
@@ -274,24 +273,24 @@ public class RulesServiceBeanTest extends TransactionalTests {
         userTransaction.begin();
 
         //no such rule to update
-        try{
+        try {
 
             rulesService.updateCustomRule(input, "test", "test");
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
-        try{
+        try {
             rulesService.updateCustomRule(input);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void updateCustomRuleTest() throws Exception {
         CustomRule customRule = RulesTestHelper.createCompleteCustomRule();
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
@@ -299,12 +298,12 @@ public class RulesServiceBeanTest extends TransactionalTests {
         createdCustomRule.setDescription(newDescription);
         CustomRule updatedCustomRule = rulesService.updateCustomRule(createdCustomRule);
         assertThat(updatedCustomRule.getDescription(), is(newDescription));
-        assertNotEquals(updatedCustomRule.getGuid(),createdCustomRule.getGuid());
+        assertNotEquals(updatedCustomRule.getGuid(), createdCustomRule.getGuid());
         assertThat(updatedCustomRule.getRuleSegmentList().size(), is(createdCustomRule.getRuleSegmentList().size()));
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void updateCustomRuleCheckRuleSegmentTest() throws Exception {
         CustomRule customRule = RulesTestHelper.createCompleteCustomRule();
         customRule.getRuleSegmentList().clear();
@@ -328,9 +327,9 @@ public class RulesServiceBeanTest extends TransactionalTests {
         assertThat(updatedCustomRule.getRuleSegmentList().size(), is(createdCustomRule.getRuleSegmentList().size()));
         assertEquals(updatedCustomRule.getRuleSegmentList().get(0), createdCustomRule.getRuleSegmentList().get(0));
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void updateCustomRuleWithUsernameTest() throws Exception {
         CustomRule customRule = RulesTestHelper.createCompleteCustomRule();
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
@@ -342,35 +341,35 @@ public class RulesServiceBeanTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void deleteCustomRuleWithNullGuidTest() throws Exception {          //a test with proper exectuion exists among the rest tests
         try {
             rulesService.deleteCustomRule(null, "testUser", "testFeature", "testApp");
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void deleteCustomRuleWithDummyGuidTest() throws Exception {
         try {
             rulesService.deleteCustomRule("dummyGuid", "testUser", "testFeature", "testApp");
             fail();
         } catch (EJBTransactionRolledbackException e) {
-            Assert.assertTrue(true);
+            assertTrue(true);
         }
     }
 
     @Test
-    @OperateOnDeployment ("normal")
-    public void updateSubscriptionNegativeTests() throws Exception{
-        try{
+    @OperateOnDeployment("normal")
+    public void updateSubscriptionNegativeTests() throws Exception {
+        try {
             rulesService.updateSubscription(null, "testUser");
             fail();
-        }catch (EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
 
@@ -379,43 +378,43 @@ public class RulesServiceBeanTest extends TransactionalTests {
         input.setSubscription(subscriptionType);
 
         //incomplete subscriptionType
-        try{
+        try {
             rulesService.updateSubscription(input, "testUser");
             fail();
-        }catch (EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
         subscriptionType.setType(SubscriptionTypeType.TICKET);
-        try{
+        try {
             rulesService.updateSubscription(input, "testUser");
             fail();
-        }catch (EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
         subscriptionType.setOwner("tester");
 
-        try{
+        try {
             rulesService.updateSubscription(input, "testUser"); //no rule Guid
             fail();
-        }catch (EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
         input.setRuleGuid("dummyGuid");
 
         userTransaction.rollback();
         userTransaction.begin();
 
-        try{
+        try {
             rulesService.updateSubscription(input, "testUser"); //non-existant rule guid
             fail();
-        }catch (EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
     }
 
     @Test
-    @OperateOnDeployment ("normal")
-    public void updateSubscriptionTest() throws Exception{
+    @OperateOnDeployment("normal")
+    public void updateSubscriptionTest() throws Exception {
         UpdateSubscriptionType input = new UpdateSubscriptionType();
         SubscriptionType subscriptionType = new SubscriptionType();
         input.setSubscription(subscriptionType);
@@ -425,29 +424,29 @@ public class RulesServiceBeanTest extends TransactionalTests {
         //create a custom rule and do some actual updates.....
         CustomRule newRule = getCompleteNewCustomRule();
         newRule = rulesService.createCustomRule(newRule, "test", "test");
-        Assert.assertNotNull(newRule.getGuid());
+        assertNotNull(newRule.getGuid());
 
         input.setRuleGuid(newRule.getGuid().toString());
 
         input.setOperation(SubscritionOperationType.ADD);
         CustomRule output = rulesService.updateSubscription(input, null);
-        Assert.assertEquals(2, output.getRuleSubscriptionList().size());
+        assertEquals(2, output.getRuleSubscriptionList().size());
 
         input.setOperation((SubscritionOperationType.REMOVE));
         output = rulesService.updateSubscription(input, null);
-        Assert.assertEquals(1, output.getRuleSubscriptionList().size());
-        Assert.assertEquals("vms_admin_com", output.getRuleSubscriptionList().get(0).getOwner());
+        assertEquals(1, output.getRuleSubscriptionList().size());
+        assertEquals("vms_admin_com", output.getRuleSubscriptionList().get(0).getOwner());
     }
 
 
     @Test
-    @OperateOnDeployment ("normal")
-    public void getTicketListNegativeTest() throws Exception {   //a test with proper input is among the rest tests
+    @OperateOnDeployment("normal")
+    public void getTicketListNegativeTest() {   //a test with proper input is among the rest tests
         try {
             rulesService.getTicketList(null, null);   //missing query
             fail();
-        }catch (EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
         TicketQuery input = new TicketQuery();
@@ -455,23 +454,23 @@ public class RulesServiceBeanTest extends TransactionalTests {
         try {
             rulesService.getTicketList(null, input);    //missing pagination
             fail();
-        }catch (EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void getTicketListByGuidTest() throws Exception {
         String user = "Test user";
         CustomRule customRule = RulesTestHelper.createCompleteCustomRule();
         customRule.setUpdatedBy(user);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         Ticket ticket = getBasicTicket();
         ticket.setRuleGuid(createdCustomRule.getGuid().toString());
         Ticket createdTicket = rulesDao.createTicket(ticket);
-        
+
         TicketQuery query = RulesTestHelper.getBasicTicketQuery();
         TicketListCriteria criteria = new TicketListCriteria();
         criteria.setKey(TicketSearchKey.TICKET_GUID);
@@ -481,23 +480,23 @@ public class RulesServiceBeanTest extends TransactionalTests {
         List<Ticket> tickets = ticketList.getTicketList();
         assertThat(tickets.size(), is(1));
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void getTicketListByGuidTwoTicketsTest() throws Exception {
         String user = "Test user";
         CustomRule customRule = RulesTestHelper.createCompleteCustomRule();
         customRule.setUpdatedBy(user);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         Ticket ticket = getBasicTicket();
         ticket.setRuleGuid(createdCustomRule.getGuid().toString());
         Ticket createdTicket = rulesDao.createTicket(ticket);
-        
+
         Ticket ticket2 = getBasicTicket();
         ticket2.setRuleGuid(createdCustomRule.getGuid().toString());
         Ticket createdTicket2 = rulesDao.createTicket(ticket2);
-        
+
         TicketQuery query = RulesTestHelper.getBasicTicketQuery();
         TicketListCriteria criteria = new TicketListCriteria();
         criteria.setKey(TicketSearchKey.TICKET_GUID);
@@ -511,19 +510,19 @@ public class RulesServiceBeanTest extends TransactionalTests {
         List<Ticket> tickets = ticketList.getTicketList();
         assertThat(tickets.size(), is(2));
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void getTicketListByAssetGuidTest() throws Exception {
         String user = "Test user";
         CustomRule customRule = RulesTestHelper.createCompleteCustomRule();
         customRule.setUpdatedBy(user);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         Ticket ticket = getBasicTicket();
         ticket.setRuleGuid(createdCustomRule.getGuid().toString());
         Ticket createdTicket = rulesDao.createTicket(ticket);
-        
+
         TicketQuery query = RulesTestHelper.getBasicTicketQuery();
         TicketListCriteria criteria = new TicketListCriteria();
         criteria.setKey(TicketSearchKey.ASSET_GUID);
@@ -533,19 +532,19 @@ public class RulesServiceBeanTest extends TransactionalTests {
         List<Ticket> tickets = ticketList.getTicketList();
         assertThat(tickets.size(), is(1));
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void getTicketListByRuleGuidTest() throws Exception {
         String user = "Test user";
         CustomRule customRule = RulesTestHelper.createCompleteCustomRule();
         customRule.setUpdatedBy(user);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         Ticket ticket = getBasicTicket();
         ticket.setRuleGuid(createdCustomRule.getGuid().toString());
         rulesDao.createTicket(ticket);
-        
+
         TicketQuery query = RulesTestHelper.getBasicTicketQuery();
         TicketListCriteria criteria = new TicketListCriteria();
         criteria.setKey(TicketSearchKey.RULE_GUID);
@@ -557,57 +556,57 @@ public class RulesServiceBeanTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
-    public void getTicketsByMovementsNegativeTest() throws Exception{ //a test with proper input is among the rest tests
-        try{
+    @OperateOnDeployment("normal")
+    public void getTicketsByMovementsNegativeTest() { //a test with proper input is among the rest tests
+        try {
             rulesService.getTicketsByMovements(null);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
         List<String> input = new ArrayList<>();
 
-        try{
+        try {
             rulesService.getTicketsByMovements(input);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
-    public void getTicketsByMovementsTest() throws Exception {
+    @OperateOnDeployment("normal")
+    public void getTicketsByMovementsTest() {
         Ticket ticket = getBasicTicket();
         String movementGuid = UUID.randomUUID().toString();
         ticket.setMovementGuid(movementGuid);
         rulesDao.createTicket(ticket);
-        
+
         List<Ticket> ticketsByMovements = rulesService.getTicketsByMovements(Collections.singletonList(movementGuid));
         assertThat(ticketsByMovements.size(), is(1));
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
-    public void getTicketsAndRulesByMovementsEmptyTest() throws Exception {
+    @OperateOnDeployment("normal")
+    public void getTicketsAndRulesByMovementsEmptyTest() {
         GetTicketsAndRulesByMovementsResponse response = rulesService.getTicketsAndRulesByMovements(Collections.singletonList(""));
         List<TicketAndRuleType> ticketsAndRules = response.getTicketsAndRules();
         assertThat(ticketsAndRules.size(), is(0));
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void getTicketsAndRulesByMovementsTest() throws Exception {
         String guid = UUID.randomUUID().toString();
-        
+
         CustomRule customRule = getCompleteNewCustomRule();
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         Ticket ticket = getBasicTicket();
         ticket.setRuleGuid(createdCustomRule.getGuid().toString());
         ticket.setMovementGuid(guid);
         rulesDao.createTicket(ticket);
-        
+
         GetTicketsAndRulesByMovementsResponse response = rulesService.getTicketsAndRulesByMovements(Collections.singletonList(guid));
         List<TicketAndRuleType> ticketsAndRules = response.getTicketsAndRules();
         assertThat(ticketsAndRules.size(), is(1));
@@ -615,152 +614,151 @@ public class RulesServiceBeanTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
-    public void countTicketsByMovementNegativeTest() throws Exception { //a test with proper input is among the rest tests
-        try{
+    @OperateOnDeployment("normal")
+    public void countTicketsByMovementNegativeTest() { //a test with proper input is among the rest tests
+        try {
             rulesService.getTicketsByMovements(null);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
         List<String> input = new ArrayList<>();
 
-        try{
+        try {
             rulesService.getTicketsByMovements(input);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
-    public void countTicketsByMovementTest() throws Exception {
+    @OperateOnDeployment("normal")
+    public void countTicketsByMovementTest() {
         Ticket ticket = getBasicTicket();
         String movementGuid = UUID.randomUUID().toString();
         ticket.setMovementGuid(movementGuid);
         rulesDao.createTicket(ticket);
-        
+
         long ticketsByMovements = rulesService.countTicketsByMovements(Collections.singletonList(movementGuid));
         assertThat(ticketsByMovements, is(1L));
     }
 
     @Test
-    @OperateOnDeployment ("normal")
-    public void updateTicketStatusNegativeTest() throws Exception {     //a test with proper input is among the rest tests
-        try{
+    @OperateOnDeployment("normal")
+    public void updateTicketStatusNegativeTest() {     //a test with proper input is among the rest tests
+        try {
             rulesService.updateTicketStatus(null);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
         Ticket input = new Ticket();
-        try{
+        try {
             rulesService.updateTicketStatus(input);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
-    public void updateTicketStatusTest() throws Exception {
+    @OperateOnDeployment("normal")
+    public void updateTicketStatusTest() {
         Ticket ticket = getBasicTicket();
         Ticket createdTicket = rulesDao.createTicket(ticket);
         TicketStatusType newStatus = TicketStatusType.POLL_PENDING;
         createdTicket.setStatus(newStatus);
-        
+
         Ticket updatedTicket = rulesService.updateTicketStatus(createdTicket);
         assertThat(updatedTicket.getStatus(), is(newStatus));
         assertThat(updatedTicket.getGuid(), is(createdTicket.getGuid()));
     }
 
     @Test
-    @OperateOnDeployment ("normal")
-    public void updateTicketStatusByQueryNegativeTest() throws Exception{   //a test with proper input is among the rest tests
-        try{
+    @OperateOnDeployment("normal")
+    public void updateTicketStatusByQueryNegativeTest() {   //a test with proper input is among the rest tests
+        try {
             rulesService.updateTicketStatusByQuery(null, null, null);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
-        try{
+        try {
             rulesService.updateTicketStatusByQuery("test user", null, null);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
-        try{
+        try {
             rulesService.updateTicketStatusByQuery("test user", null, TicketStatusType.OPEN);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
         TicketQuery input = new TicketQuery();
         input.getTicketSearchCriteria().add(new TicketListCriteria());
-        try{
+        try {
             rulesService.updateTicketStatusByQuery("test user", input, TicketStatusType.OPEN);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void updateTicketStatusByQueryTest() throws Exception {
         String user = "Test user";
         CustomRule customRule = RulesTestHelper.createCompleteCustomRule();
         customRule.setUpdatedBy(user);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         Ticket ticket = getBasicTicket();
         ticket.setRuleGuid(createdCustomRule.getGuid().toString());
         ticket.setStatus(TicketStatusType.OPEN);
         Ticket createdTicket = rulesDao.createTicket(ticket);
-        
+
         TicketQuery query = RulesTestHelper.getBasicTicketQuery();
         TicketListCriteria criteria = new TicketListCriteria();
         criteria.setKey(TicketSearchKey.TICKET_GUID);
         criteria.setValue(createdTicket.getGuid().toString());
         query.getTicketSearchCriteria().add(criteria);
-        
+
         rulesService.updateTicketStatusByQuery(user, query, TicketStatusType.POLL_PENDING);
-        
+
         Ticket fetchedTicket = rulesService.getTicketByGuid(createdTicket.getGuid());
         assertThat(fetchedTicket.getStatus(), is(TicketStatusType.POLL_PENDING));
         assertThat(fetchedTicket.getGuid(), is(createdTicket.getGuid()));
     }
 
 
-
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void updateTicketCountNegativeTest() {     //a test with proper input is among the rest tests
-        try{
+        try {
             rulesService.updateTicketCount(null);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
 
         Ticket input = new Ticket();
-        try{
+        try {
             rulesService.updateTicketCount(input);
             fail();
-        }catch(EJBTransactionRolledbackException e){
-            Assert.assertTrue(true);
+        } catch (EJBTransactionRolledbackException e) {
+            assertTrue(true);
         }
     }
 
     //getAlarmReportByGuid and getTicketByGuid have tests among the rest tests
 
-    private CustomRule getCompleteNewCustomRule(){
+    private CustomRule getCompleteNewCustomRule() {
         CustomRule customRule = new CustomRule();
 
         customRule.setName("Flag SWE && area DNK => Send to DNK" + " (" + System.currentTimeMillis() + ")");
@@ -826,7 +824,7 @@ public class RulesServiceBeanTest extends TransactionalTests {
 
         return customRule;
     }
-    
+
     private Ticket getBasicTicket() {
         Ticket ticket = new Ticket();
         ticket.setAssetGuid(UUID.randomUUID().toString());
