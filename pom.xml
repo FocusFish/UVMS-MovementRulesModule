@@ -9,7 +9,7 @@
 
     <groupId>fish.focus.uvms.movement-rules</groupId>
     <artifactId>movement-rules</artifactId>
-    <version>2.4.20</version>
+    <version>2.4.21</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -23,9 +23,8 @@
         <uvms.config.version>4.1.6</uvms.config.version>
         <usm4uvms.version>4.1.12</usm4uvms.version>
         <uvms.common.version>4.1.15</uvms.common.version>
-        <uvms.asset.version>6.8.34</uvms.asset.version>
-        <uvms.incident.version>1.0.12</uvms.incident.version>
-
+        <uvms.asset.version>6.8.35</uvms.asset.version>
+        <uvms.incident.version>1.0.15</uvms.incident.version>
 
         <project.scm.id>github</project.scm.id>
         <scm.connection>scm:git:https://github.com/FocusFish/UVMS-MovementRulesModule.git</scm.connection>
