@@ -21,14 +21,16 @@ import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import fish.focus.uvms.movementrules.service.entity.Interval;
 import fish.focus.uvms.movementrules.service.entity.RuleAction;
 import fish.focus.uvms.movementrules.service.entity.RuleSegment;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class CustomRuleParser {
-    
-    private CustomRuleParser() {}
-    
+
+    private CustomRuleParser() {
+    }
+
     public static List<CustomRuleDto> parseRules(List<CustomRule> rawRules) {
         List<CustomRuleDto> rules = new ArrayList<>();
 
@@ -49,7 +51,7 @@ public class CustomRuleParser {
                 }
 
                 // All subcriteria
-                String value = segment.getValue().replace("\"","");
+                String value = segment.getValue().replace("\"", "");
 
                 if (segment.getSubCriteria() != null) {
                     switch (SubCriteriaType.valueOf(segment.getSubCriteria())) {
@@ -280,30 +282,30 @@ public class CustomRuleParser {
                         }
                         break;
                     case GT:
-                        if(SubCriteriaType.POSITION_REPORT_TIME.value().equals(segment.getSubCriteria())) {
+                        if (SubCriteriaType.POSITION_REPORT_TIME.value().equals(segment.getSubCriteria())) {
                             sb.append(" < ");
-                        }else {
+                        } else {
                             sb.append(" > ");
                         }
                         break;
                     case GE:
-                        if(SubCriteriaType.POSITION_REPORT_TIME.value().equals(segment.getSubCriteria())) {
+                        if (SubCriteriaType.POSITION_REPORT_TIME.value().equals(segment.getSubCriteria())) {
                             sb.append(" <= ");
-                        }else {
+                        } else {
                             sb.append(" >= ");
                         }
                         break;
                     case LT:
-                        if(SubCriteriaType.POSITION_REPORT_TIME.value().equals(segment.getSubCriteria())) {
+                        if (SubCriteriaType.POSITION_REPORT_TIME.value().equals(segment.getSubCriteria())) {
                             sb.append(" > ");
-                        }else {
+                        } else {
                             sb.append(" < ");
                         }
                         break;
                     case LE:
-                        if(SubCriteriaType.POSITION_REPORT_TIME.value().equals(segment.getSubCriteria())) {
+                        if (SubCriteriaType.POSITION_REPORT_TIME.value().equals(segment.getSubCriteria())) {
                             sb.append(" >= ");
-                        }else {
+                        } else {
                             sb.append(" <= ");
                         }
                         break;
@@ -314,7 +316,7 @@ public class CustomRuleParser {
                 // Remove quotations (event though there shouldn't be any) from the value, since it totally messes up the rule engine
                 if (segment.getSubCriteria().equals(SubCriteriaType.POSITION_REPORT_TIME.value())) {
                     sb.append("positionTime");
-                } else  {
+                } else {
                     sb.append("\"");
                     sb.append(value);
                     sb.append("\"");
@@ -367,7 +369,7 @@ public class CustomRuleParser {
 
             // Format: "ACTION,TARGET,VALUE;ACTION,TARGET,VALUE;ACTION,TARGET,VALUE;"
             List<RuleAction> actions = rawRule.getRuleActionList();
-            
+
             sb = new StringBuilder();
             if (actions.isEmpty()) {
                 sb.append(";");

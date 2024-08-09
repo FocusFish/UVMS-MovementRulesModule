@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+
 import fish.focus.schema.config.module.v1.ConfigModuleBaseRequest;
 import fish.focus.schema.config.types.v1.PullSettingsStatus;
 import fish.focus.schema.config.types.v1.SettingType;
@@ -31,10 +32,10 @@ import fish.focus.uvms.movementrules.service.message.producer.bean.RulesMessageP
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSConfigEvent")})
 public class ConfigServiceMock implements MessageListener {
-    
+
     @Inject
     RulesMessageProducerBean messageProducer;
-    
+
     @Override
     public void onMessage(Message message) {
         TextMessage textMessage = (TextMessage) message;
@@ -53,7 +54,7 @@ public class ConfigServiceMock implements MessageListener {
                     break;
             }
         } catch (Exception e) {
-            
+
         }
     }
 }

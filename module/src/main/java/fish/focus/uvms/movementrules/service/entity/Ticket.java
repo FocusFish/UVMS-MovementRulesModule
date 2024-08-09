@@ -14,6 +14,7 @@ package fish.focus.uvms.movementrules.service.entity;
 
 import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
 import fish.focus.uvms.movementrules.service.constants.ServiceConstants;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,8 +36,6 @@ import java.util.UUID;
 })
 public class Ticket implements Serializable {
 
-    private static final long serialVersionUID = -2423644165824696757L;
-    
     public static final String FIND_TICKET_BY_ASSET_AND_RULE = "Ticket.findByAssetGuid";
     public static final String FIND_TICKETS_BY_MOVEMENTS = "Ticket.findByMovementGuids";
     public static final String COUNT_OPEN_TICKETS = "Ticket.countOpenTickets";
@@ -44,7 +43,9 @@ public class Ticket implements Serializable {
     public static final String COUNT_TICKETS_FOR_RULE = "Ticket.countAssetsNotSending";
     public static final String FIND_LATEST_TICKET_FOR_RULE = "Ticket.findLastTicketForRule";
     public static final String FIND_ALL_ASSET_NOT_SENDING_TICKETS_BETWEEN = "Ticket.findAllAssetNotSendingTicketsBetween";
-    
+
+    private static final long serialVersionUID = -2423644165824696757L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ticket_id")

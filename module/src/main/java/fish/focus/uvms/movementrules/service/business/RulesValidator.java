@@ -11,45 +11,41 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.business;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.annotation.PostConstruct;
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
+import fish.focus.uvms.movementrules.model.dto.MovementDetails;
+import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
+import fish.focus.uvms.movementrules.service.bean.ValidationServiceBean;
+import fish.focus.uvms.movementrules.service.entity.CustomRule;
+import fish.focus.uvms.movementrules.service.mapper.CustomRuleParser;
 import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateContainer;
 import org.drools.template.parser.TemplateDataListener;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import fish.focus.uvms.movementrules.model.dto.MovementDetails;
-import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
-import fish.focus.uvms.movementrules.service.bean.ValidationServiceBean;
-import fish.focus.uvms.movementrules.service.entity.CustomRule;
-import fish.focus.uvms.movementrules.service.mapper.CustomRuleParser;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.*;
+import javax.inject.Inject;
+import java.io.InputStream;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Startup
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 public class RulesValidator {
     private static final Logger LOG = LoggerFactory.getLogger(RulesValidator.class);
+
     private static final String CUSTOM_RULE_DRL_FILE = "src/main/resources/rules/CustomRules.drl";
     private static final String CUSTOM_RULE_TEMPLATE = "/templates/CustomRulesTemplate.drt";
 
-
-
+    static String valuePattern = "\".*?\"";         //everything between two ""
+    static String itemPatternString = "!*\\w.*?(( .*?\".*?\")|(contains\\(.*?\"\\))|(Time))";          //might start with a !, then a character followed by anything and then: { something inside "  " OR contains( "thing" ) OR ends with Time") }
+    static String dividerPattern = "(&&)|(\\|\\|)";            // && or ||
 
     @Inject
     private ValidationServiceBean validationService;
@@ -58,13 +54,13 @@ public class RulesValidator {
     private RulesServiceBean rulesService;
 
     private KieContainer customKcontainer;
-   private  StatelessKieSession ksession ;
+    private StatelessKieSession ksession;
 
     @PostConstruct
     public void init() {
         try {
             updateCustomRules();
-        }catch (Exception e){
+        } catch (Exception e) {
             LOG.error("Unable to initialize initial ruleset due to: ", e);
             throw new RuntimeException(e);
         }
@@ -90,7 +86,7 @@ public class RulesValidator {
             // Create session
             kieServices.newKieBuilder(customKfs).buildAll();
             customKcontainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
-            if(customKcontainer != null){
+            if (customKcontainer != null) {
                 ksession = customKcontainer.newStatelessKieSession();
                 ksession.setGlobal("validationService", validationService);
                 ksession.setGlobal("logger", LOG);
@@ -100,12 +96,12 @@ public class RulesValidator {
             ksession = null;
         }
     }
-    
+
     @Lock(LockType.READ)
     public void evaluate(MovementDetails fact) {
         if (ksession != null) {
             LOG.debug("Verify user defined rules");
-                ksession.execute(fact);
+            ksession.execute(fact);
         }
     }
 
@@ -135,13 +131,7 @@ public class RulesValidator {
         return drl;
     }
 
-
-    static String valuePattern = "\".*?\"";         //everything between two ""
-    static String itemPatternString = "!*\\w.*?(( .*?\".*?\")|(contains\\(.*?\"\\))|(Time))";          //might start with a !, then a character followed by anything and then: { something inside "  " OR contains( "thing" ) OR ends with Time") }
-
-    static String dividerPattern = "(&&)|(\\|\\|)";            // && or ||
-
-    private String vicinityReplacement(String oldExpression){
+    private String vicinityReplacement(String oldExpression) {
 
         String[] splitExpression = oldExpression.split(dividerPattern);     //split incoming string on the logical operators
 
@@ -152,16 +142,17 @@ public class RulesValidator {
 
         Pattern valuePattern = Pattern.compile(RulesValidator.valuePattern);
         StringBuilder resultBuilder = new StringBuilder();
-        if(oldExpression.contains("vicinity")){                             //if there is a need to iterate through the vicinity list
+        if (oldExpression.contains("vicinity")) {                             //if there is a need to iterate through the vicinity list
             resultBuilder.append("($vicOf: VicinityInfoDTO( ) from $vicOfList) \n");
         }
         for (int i = 0; i < splitExpression.length; i++) {
-            if(i == 0){} //do nothing
-            else{
+            if (i == 0) {
+            } //do nothing
+            else {
                 splitterMatcher.find();
-                if(splitterMatcher.group().contains("&")) {             //add and/or as needed
+                if (splitterMatcher.group().contains("&")) {             //add and/or as needed
                     resultBuilder.append(" and ");
-                }else {
+                } else {
                     resultBuilder.append(" or ");
                 }
             }
@@ -170,25 +161,25 @@ public class RulesValidator {
             itemMatcher.find();
             String toBeReplaced = itemMatcher.group();
 
-            if(splitExpression[i].contains("vicinity")){        //if the rule part needs to look at vicinity
+            if (splitExpression[i].contains("vicinity")) {        //if the rule part needs to look at vicinity
 
-                if(splitExpression[i].contains("Of")) {
+                if (splitExpression[i].contains("Of")) {
 
                     Matcher valueMatcher = valuePattern.matcher(splitExpression[i]);
                     valueMatcher.find();
                     String value = valueMatcher.group();
 
-                    if(splitExpression[i].contains("!")){           //add correct text as needed
-                        resultBuilder.append(splitExpression[i].replace(toBeReplaced, addVicinityText("getAsset().contains(" + value + ")").replace("$","!$")));
-                    }else {
+                    if (splitExpression[i].contains("!")) {           //add correct text as needed
+                        resultBuilder.append(splitExpression[i].replace(toBeReplaced, addVicinityText("getAsset().contains(" + value + ")").replace("$", "!$")));
+                    } else {
                         resultBuilder.append(splitExpression[i].replace(toBeReplaced, addVicinityText("getAsset().contains(" + value + ")")));
                     }
-                }else {         //aka vicinityDistance
+                } else {         //aka vicinityDistance
 
-                    String value = splitExpression[i].replace(toBeReplaced, addVicinityText(toBeReplaced)).replace("vicinityDistance", "getDistance()").replace("\"","");
+                    String value = splitExpression[i].replace(toBeReplaced, addVicinityText(toBeReplaced)).replace("vicinityDistance", "getDistance()").replace("\"", "");
                     resultBuilder.append(value);
                 }
-            }else {                     //if "normal", encapsulate the expression
+            } else {                     //if "normal", encapsulate the expression
                 String s = splitExpression[i].replace(toBeReplaced, addNormalText(toBeReplaced));
                 resultBuilder.append(s);
             }
@@ -200,12 +191,12 @@ public class RulesValidator {
     }
 
 
-    private String addVicinityText(String variableAndValue){
+    private String addVicinityText(String variableAndValue) {
         String s = "(eval ( $vicOf." + variableAndValue + "))";
         return s;
     }
 
-    private String addNormalText(String variableAndValue){
+    private String addNormalText(String variableAndValue) {
         String s = "(MovementDetails( " + variableAndValue + "))";
         return s;
     }

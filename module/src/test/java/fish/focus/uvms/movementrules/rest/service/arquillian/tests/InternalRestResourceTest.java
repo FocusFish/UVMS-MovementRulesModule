@@ -42,10 +42,10 @@ public class InternalRestResourceTest extends BuildRulesRestDeployment {
 
     @Inject
     private RulesServiceBean rulesService;
-    
+
     @Inject
     private RulesDao rulesDao;
-    
+
     @Inject
     private JMSHelper jmsHelper;
 
@@ -96,12 +96,12 @@ public class InternalRestResourceTest extends BuildRulesRestDeployment {
         rulesDao.removeTicketAfterTests(ticket);
         rulesDao.removeCustomRuleAfterTests(customRule);
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void evaluateAndTriggerRuleSendToPlugin() throws Exception {
         jmsHelper.clearExchangeQueue();
-        
+
         String flagState = "SWE";
         MovementDetails movementDetails = getMovementDetails();
         movementDetails.setFlagState(flagState);
@@ -135,16 +135,16 @@ public class InternalRestResourceTest extends BuildRulesRestDeployment {
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(movementDetails));
         assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
-        
+
         TextMessage message = (TextMessage) jmsHelper.getMessageFromExchangeQueue();
-        
+
         assertThat(message, is(notNullValue()));
-        
+
         SendMovementToPluginRequest sendMovementRequest = JAXBMarshaller.unmarshallTextMessage(message, SendMovementToPluginRequest.class);
         assertThat(sendMovementRequest, is(notNullValue()));
-        
+
         assertThat(sendMovementRequest.getReport().getMovement().getConnectId(), is(movementDetails.getConnectId()));
-        
+
         rulesDao.removeCustomRuleAfterTests(customRule);
     }
 
@@ -200,7 +200,7 @@ public class InternalRestResourceTest extends BuildRulesRestDeployment {
 
         rulesDao.removeCustomRuleAfterTests(customRule);
     }
-    
+
     private MovementDetails getMovementDetails() {
         MovementDetails movementDetails = new MovementDetails();
         movementDetails.setMovementGuid(UUID.randomUUID().toString());

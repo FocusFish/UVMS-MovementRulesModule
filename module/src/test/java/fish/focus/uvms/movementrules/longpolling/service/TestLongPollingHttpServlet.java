@@ -12,6 +12,7 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package fish.focus.uvms.movementrules.longpolling.service;
 
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 import fish.focus.uvms.movementrules.longpolling.service.LongPollingHttpServlet;
@@ -19,7 +20,7 @@ import fish.focus.uvms.movementrules.longpolling.service.LongPollingHttpServlet;
 public class TestLongPollingHttpServlet {
 
     LongPollingHttpServlet longPolling;
-    
+
     @Before
     public void setup() {
         longPolling = new LongPollingHttpServlet();
@@ -48,7 +49,7 @@ public class TestLongPollingHttpServlet {
         String jsonMessage = longPolling.createJsonMessage(null, "updated");
         assertEquals("{\"updated\":{\"ids\":[]}}", jsonMessage);
     }
-    
+
     @Test
     public void testCountTrue() {
         String jsonMessage = longPolling.createJsonMessageCount(true);

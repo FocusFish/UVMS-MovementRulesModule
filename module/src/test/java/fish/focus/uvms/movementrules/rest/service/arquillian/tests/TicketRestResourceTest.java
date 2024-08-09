@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
@@ -46,7 +45,7 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
 
     @Inject
     private RulesDao rulesDao;
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void getTicketsByMovementGuidListTest() {
@@ -85,7 +84,7 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, getToken())
                 .post(Entity.json(Collections.singletonList("movement Guid")), Long.class);
-        assertEquals((Long)0L, response);
+        assertEquals((Long) 0L, response);
 
         int numberOfPriorTickets = response.intValue();
 
@@ -143,7 +142,7 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
         AppError appError = response.readEntity(AppError.class);
         assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), appError.code.intValue());
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void updateTicketStatusByQueryTest() {
@@ -153,12 +152,13 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
         ticketQuery.getTicketSearchCriteria().add(tlc);
 
         List<TicketType> response = getWebTarget()
-                    .path("tickets/status/")
-                    .path("vms_admin_com")
-                    .path(TicketStatusType.OPEN.name())
-                    .request(MediaType.APPLICATION_JSON)
-                    .header(HttpHeaders.AUTHORIZATION, getToken())
-                    .post(Entity.json(ticketQuery), new GenericType<List<TicketType>>(){});
+                .path("tickets/status/")
+                .path("vms_admin_com")
+                .path(TicketStatusType.OPEN.name())
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, getToken())
+                .post(Entity.json(ticketQuery), new GenericType<List<TicketType>>() {
+                });
 
         assertEquals(0, response.size());
 
@@ -179,7 +179,8 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
                 .path("tickets/status/vms_admin_com/" + TicketStatusType.CLOSED)
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, getToken())
-                .post(Entity.json(ticketQuery), new GenericType<List<TicketType>>(){});
+                .post(Entity.json(ticketQuery), new GenericType<List<TicketType>>() {
+                });
 
         assertEquals(2, response.size());
 
@@ -237,7 +238,7 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
                 .header(HttpHeaders.AUTHORIZATION, getToken())
                 .get(Long.class);
 
-        assertEquals(0 , response.intValue());
+        assertEquals(0, response.intValue());
 
         CustomRule customRule = createCustomRule("TestUser");
 
@@ -262,7 +263,7 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
                 .header(HttpHeaders.AUTHORIZATION, getToken())
                 .get(Long.class);
 
-        assertEquals(numberOfTicketsBefore + 1 , response.intValue());
+        assertEquals(numberOfTicketsBefore + 1, response.intValue());
 
         rulesDao.removeTicketAfterTests(ticket);
         rulesDao.removeCustomRuleAfterTests(customRule);
@@ -289,7 +290,7 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
                 .header(HttpHeaders.AUTHORIZATION, getToken())
                 .get(Long.class);
 
-        assertEquals(numberOfTicketsBefore +1 , response.intValue());
+        assertEquals(numberOfTicketsBefore + 1, response.intValue());
 
         rulesDao.removeTicketAfterTests(ticket);
     }
@@ -305,7 +306,8 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
                 .path("/tickets/assetsNotSending")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, getToken())
-                .get(new GenericType<List<TicketType>>(){});
+                .get(new GenericType<List<TicketType>>() {
+                });
 
         assertFalse(response.isEmpty());
         assertTrue(response.stream().allMatch(t -> t.getRuleGuid().equals(ServiceConstants.ASSET_NOT_SENDING_RULE)));
@@ -330,7 +332,8 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
                 .queryParam("toDate", DateUtils.dateToEpochMilliseconds(Instant.now().plusSeconds(1)))
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, getToken())
-                .get(new GenericType<List<TicketType>>(){});
+                .get(new GenericType<List<TicketType>>() {
+                });
 
         assertFalse(response.isEmpty());
         assertTrue(response.stream().allMatch(t -> t.getRuleGuid().equals(ServiceConstants.ASSET_NOT_SENDING_RULE)));
@@ -355,7 +358,8 @@ public class TicketRestResourceTest extends BuildRulesRestDeployment {
                 .queryParam("toDate", DateUtils.dateToEpochMilliseconds(Instant.now().minusSeconds(8)))
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, getToken())
-                .get(new GenericType<List<TicketType>>(){});
+                .get(new GenericType<List<TicketType>>() {
+                });
 
         assertFalse(response.stream().anyMatch(t -> t.getAssetGuid().equals(ticket.getAssetGuid())));
 

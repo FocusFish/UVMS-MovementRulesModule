@@ -11,10 +11,9 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.model.mapper;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBContext;
@@ -22,16 +21,18 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JAXBMarshaller {
 
-    private JAXBMarshaller() {}
-    
     private static final Logger LOG = LoggerFactory.getLogger(JAXBMarshaller.class);
-
     private static Map<String, JAXBContext> contexts = new HashMap<>();
+
+    private JAXBMarshaller() {
+    }
 
     /**
      * Marshalls a JAXB Object to a XML String representation
@@ -61,7 +62,8 @@ public class JAXBMarshaller {
             return marshalled;
         } catch (JAXBException ex) {
             LOG.error("[ Error when marshalling object to string ] {} ", ex.getMessage());
-            throw new JAXBException("[ Error when marshalling Object to String ]", ex);        }
+            throw new JAXBException("[ Error when marshalling Object to String ]", ex);
+        }
     }
 
     /**
@@ -70,7 +72,7 @@ public class JAXBMarshaller {
      *
      * @param <R>
      * @param textMessage
-     * @param clazz pperException
+     * @param clazz       pperException
      * @return
      * @throws
      */

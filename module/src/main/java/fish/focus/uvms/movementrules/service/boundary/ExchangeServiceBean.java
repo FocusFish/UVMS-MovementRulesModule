@@ -11,36 +11,27 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.boundary;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
 import fish.focus.schema.exchange.module.v1.ExchangeModuleMethod;
 import fish.focus.schema.exchange.movement.v1.MovementType;
 import fish.focus.schema.exchange.movement.v1.RecipientInfoType;
-import fish.focus.schema.exchange.plugin.types.v1.EmailType;
-import fish.focus.schema.exchange.plugin.types.v1.PluginType;
-import fish.focus.schema.exchange.service.v1.ServiceResponseType;
-import fish.focus.uvms.exchange.model.mapper.ExchangeDataSourceResponseMapper;
 import fish.focus.uvms.exchange.model.mapper.ExchangeModuleRequestMapper;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
-import fish.focus.uvms.movementrules.service.message.consumer.RulesResponseConsumer;
 import fish.focus.uvms.movementrules.service.message.producer.bean.ExchangeProducerBean;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.jms.JMSException;
+import java.time.Instant;
+import java.util.List;
 
 @Stateless
 public class ExchangeServiceBean {
 
-
     @Inject
     private ExchangeProducerBean exchangeProducer;
 
-
-    public void sendReportToPlugin(String pluginName, String ruleName, String recipient, MovementType exchangeMovement, List<RecipientInfoType> recipientInfoList, MovementDetails movementDetails) throws  JMSException {
+    public void sendReportToPlugin(String pluginName, String ruleName, String recipient, MovementType exchangeMovement, List<RecipientInfoType> recipientInfoList, MovementDetails movementDetails) throws JMSException {
         String exchangeRequest = ExchangeModuleRequestMapper.createSendReportToPlugin(pluginName, null, Instant.now(), ruleName, recipient, exchangeMovement, recipientInfoList, movementDetails.getAssetName(), movementDetails.getIrcs(), movementDetails.getMmsi(), movementDetails.getExternalMarking(), movementDetails.getFlagState());
         exchangeProducer.sendModuleMessage(exchangeRequest, ExchangeModuleMethod.SEND_REPORT_TO_PLUGIN.value());
     }
-    
 }

@@ -11,11 +11,7 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.longpolling.service;
 
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
+import javax.ejb.*;
 import javax.servlet.AsyncContext;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +26,8 @@ public class LongPollingContextHelper {
 
     /**
      * Adds an async context, associated with the given path.
-     * 
-     * @param ctx an asynchronous context
+     *
+     * @param ctx             an asynchronous context
      * @param longPollingPath a long-polling path
      */
     @Lock(LockType.WRITE)
@@ -47,7 +43,7 @@ public class LongPollingContextHelper {
 
     /**
      * Removes and returns the first async context, for a path.
-     * 
+     *
      * @param longPollingPath a path
      * @return the first context for this path, or null if none exist
      */

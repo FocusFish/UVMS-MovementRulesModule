@@ -11,7 +11,6 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.model.mapper;
 
-import java.util.List;
 import fish.focus.schema.movementrules.exchange.v1.PluginType;
 import fish.focus.schema.movementrules.module.v1.GetTicketsAndRulesByMovementsRequest;
 import fish.focus.schema.movementrules.module.v1.RulesModuleMethod;
@@ -19,11 +18,13 @@ import fish.focus.schema.movementrules.module.v1.SetMovementReportRequest;
 import fish.focus.schema.movementrules.movement.v1.RawMovementType;
 
 import javax.xml.bind.JAXBException;
+import java.util.List;
 
 public class MovementRulesModuleRequestMapper {
 
-    private MovementRulesModuleRequestMapper() {}
-    
+    private MovementRulesModuleRequestMapper() {
+    }
+
     public static String createSetMovementReportRequest(PluginType type, RawMovementType rawMovementType, String username) {
         try {
 

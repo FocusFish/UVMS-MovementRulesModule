@@ -11,9 +11,10 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.rest.service.dto;
 
-import org.junit.Test;
 import fish.focus.uvms.movementrules.service.dto.ResponseCode;
 import fish.focus.uvms.movementrules.service.dto.ResponseDto;
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 
 public class ResponseTest {

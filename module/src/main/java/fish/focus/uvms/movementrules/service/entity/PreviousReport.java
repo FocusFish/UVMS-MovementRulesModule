@@ -31,7 +31,7 @@ public class PreviousReport implements Serializable {
 
     public static final String GET_ALL_PREVIOUS_REPORTS = "PreviousReport.findAll";
     public static final String FIND_PREVIOUS_REPORT_BY_ASSET_GUID = "PreviousReport.findByAssetGuid";
-    
+
     private static final long serialVersionUID = 1L;
 
     @Id

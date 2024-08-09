@@ -38,8 +38,6 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
 
     private static final String INCIDENT_EVENT = "IncidentEvent";
 
-    private JMSHelper jmsHelper = new JMSHelper();
-
     @Inject
     RulesServiceBean rulesService;
 
@@ -51,6 +49,8 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
 
     @Inject
     RulesDao rulesDao;
+
+    private final JMSHelper jmsHelper = new JMSHelper();
 
     @Before
     public void setThreshold() throws Exception {

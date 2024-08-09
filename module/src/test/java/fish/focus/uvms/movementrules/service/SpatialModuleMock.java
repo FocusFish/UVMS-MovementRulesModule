@@ -23,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import fish.focus.uvms.spatial.model.schemas.Area;
 import fish.focus.uvms.spatial.model.schemas.AreaExtendedIdentifierType;
 import fish.focus.uvms.spatial.model.schemas.AreaType;
@@ -57,10 +58,8 @@ public class SpatialModuleMock {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response getEnrichmentAndTransitions(@QueryParam(value = "firstLongitude") Double firstLongitude, @QueryParam(value = "firstLatitude") Double firstLatitude, @QueryParam(value = "secondLongitude") Double secondLongitude, @QueryParam(value = "secondLatitude") Double secondLatitude) {
-        
-        
         AreaTransitionsDTO response = new AreaTransitionsDTO();
-        
+
         SpatialEnrichmentRS spatialEnrichmentRS = new SpatialEnrichmentRS();
         populateClosestAreas(spatialEnrichmentRS);
         populateClosestLocations(spatialEnrichmentRS);
@@ -72,18 +71,18 @@ public class SpatialModuleMock {
         response.setExitedAreas(new ArrayList<>());
 
         ArrayList<AreaExtendedIdentifierType> enteredAreas = new ArrayList<>(currentAreas.getAreas());
-        
+
         if (firstLatitude != null && firstLongitude != null) {
             AreasByLocationType previousAreas = getAreas(firstLatitude, firstLongitude);
             ArrayList<AreaExtendedIdentifierType> exitedAreas = new ArrayList<>(previousAreas.getAreas());
             exitedAreas.removeAll(currentAreas.getAreas());
             response.setExitedAreas(exitedAreas);
-            
+
             enteredAreas.removeAll(previousAreas.getAreas());
         }
-        
+
         response.setEnteredAreas(enteredAreas);
-        
+
         return Response.ok(jsonb.toJson(response)).build();
     }
 
@@ -98,7 +97,7 @@ public class SpatialModuleMock {
         closestAreas.add(area);
         spatialEnrichmentRS.setClosestAreas(new ClosestAreasType(closestAreas));
     }
-    
+
     private void populateClosestLocations(SpatialEnrichmentRS spatialEnrichmentRS) {
         ClosestLocationsType closestLocationsType = new ClosestLocationsType();
         ArrayList<Location> closestLocations = new ArrayList<>();
@@ -112,7 +111,7 @@ public class SpatialModuleMock {
         closestLocationsType.setClosestLocations(closestLocations);
         spatialEnrichmentRS.setClosestLocations(closestLocationsType);
     }
-    
+
     private AreasByLocationType getAreas(Double latitude, Double longitude) {
         AreasByLocationType areasByLocationType = new AreasByLocationType();
         List<AreaExtendedIdentifierType> areas = new ArrayList<>();
@@ -132,7 +131,7 @@ public class SpatialModuleMock {
         areasByLocationType.setAreas(areas);
         return areasByLocationType;
     }
-    
+
     private String getTestAreaSuffix(Double latitude, Double longitude) {
         if (latitude >= 0 && longitude >= 0) {
             return "A";

@@ -19,7 +19,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -228,14 +227,14 @@ public class CustomRulesRestResourceQueryTest extends BuildRulesRestDeployment {
         return response;
     }
 
-    private void setBasicPagination(CustomRuleQuery query){
+    private void setBasicPagination(CustomRuleQuery query) {
         ListPagination pagination = new ListPagination();
         pagination.setListSize(10);
         pagination.setPage(1);
         query.setPagination(pagination);
     }
 
-    private CustomRuleListCriteria createCustomRuleCriteria(CustomRuleSearchKey key, String value){
+    private CustomRuleListCriteria createCustomRuleCriteria(CustomRuleSearchKey key, String value) {
         CustomRuleListCriteria criteria = new CustomRuleListCriteria();
         criteria.setKey(key);
         criteria.setValue(value);

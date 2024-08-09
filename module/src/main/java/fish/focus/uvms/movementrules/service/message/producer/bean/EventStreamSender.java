@@ -30,14 +30,11 @@ import java.util.List;
 public class EventStreamSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(EventStreamSender.class);
-
-    @Resource(mappedName = "java:/" + MessageConstants.EVENT_STREAM_TOPIC)
-    private Destination destination;
-
     @Inject
     @JMSConnectionFactory("java:/ConnectionFactory")
     JMSContext context;
-
+    @Resource(mappedName = "java:/" + MessageConstants.EVENT_STREAM_TOPIC)
+    private Destination destination;
     private Jsonb jsonb;
 
     @PostConstruct
@@ -49,11 +46,11 @@ public class EventStreamSender {
     public void updatedTicket(@Observes(during = TransactionPhase.AFTER_SUCCESS) @TicketUpdateEvent EventTicket ticket) {
         sendEvent(ticket, "TicketUpdate");
     }
-    
+
     public void createdTicket(@Observes(during = TransactionPhase.AFTER_SUCCESS) @TicketEvent EventTicket ticket) {
         sendEvent(ticket, "Ticket");
     }
-    
+
     private void sendEvent(EventTicket eventTicket, String eventName) {
         if (eventTicket.getCustomRule() == null) {
             LOG.error("Rule in eventTicket {} is null", eventTicket.getTicket().getRuleName());
@@ -63,7 +60,7 @@ public class EventStreamSender {
             String outgoingJson = jsonb.toJson(TicketMapper.toTicketType(eventTicket.getTicket()));
             List<String> subscriberList = new ArrayList<>();
             String subscriberJson = null;
-            if(!eventTicket.getCustomRule().getAvailability().equals(AvailabilityType.GLOBAL.value())) {
+            if (!eventTicket.getCustomRule().getAvailability().equals(AvailabilityType.GLOBAL.value())) {
                 eventTicket.getCustomRule().getRuleSubscriptionList().stream()
                         .filter(sub -> SubscriptionTypeType.TICKET.value().equals(sub.getType()))
                         .forEach(sub -> subscriberList.add(sub.getOwner()));

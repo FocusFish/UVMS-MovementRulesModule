@@ -11,10 +11,10 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.message.producer.bean;
 
-import javax.ejb.Stateless;
-import javax.jms.*;
-
 import fish.focus.uvms.commons.message.impl.AbstractProducer;
+
+import javax.ejb.Stateless;
+import javax.jms.Destination;
 
 @Stateless
 public class RulesMessageProducerBean extends AbstractProducer {

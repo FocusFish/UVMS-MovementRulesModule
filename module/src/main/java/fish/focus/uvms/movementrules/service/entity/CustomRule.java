@@ -11,18 +11,19 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.entity;
 
+import fish.focus.schema.movementrules.customrule.v1.AvailabilityType;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import fish.focus.schema.movementrules.customrule.v1.AvailabilityType;
 
 //@formatter:off
 @Entity
@@ -37,7 +38,7 @@ import fish.focus.schema.movementrules.customrule.v1.AvailabilityType;
 @DynamicUpdate
 @DynamicInsert
 public class CustomRule implements Serializable {
-    
+
     public static final String GET_RUNNABLE_CUSTOM_RULES = "CustomRule.getValidCustomRule";
     public static final String LIST_CUSTOM_RULES_BY_USER = "CustomRule.listCustomRules";  // rule engine
     public static final String FIND_CUSTOM_RULE_GUID_FOR_TICKETS = "CustomRule.findRuleGuidsForTickets";
@@ -100,7 +101,7 @@ public class CustomRule implements Serializable {
     private Instant lastTriggered;
 
 
-    public CustomRule copy(){
+    public CustomRule copy() {
         CustomRule copy = new CustomRule();
         copy.setName(name);
         copy.setDescription(description);
@@ -114,10 +115,10 @@ public class CustomRule implements Serializable {
         copy.setUpdated(updated);
         copy.setUpdatedBy(updatedBy);
 
-        for (RuleSegment rs: ruleSegmentList) {
+        for (RuleSegment rs : ruleSegmentList) {
             copy.getRuleSegmentList().add(rs.copy(copy));
         }
-        for (RuleAction ra: ruleActionList) {
+        for (RuleAction ra : ruleActionList) {
             copy.getRuleActionList().add(ra.copy(copy));
         }
 
@@ -160,7 +161,9 @@ public class CustomRule implements Serializable {
         this.availability = availability;
     }
 
-    public void setAvailability(AvailabilityType at) {availability = at.value();}
+    public void setAvailability(AvailabilityType at) {
+        availability = at.value();
+    }
 
     public String getOrganisation() {
         return organisation;
@@ -198,16 +201,16 @@ public class CustomRule implements Serializable {
         return archived;
     }
 
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
     public boolean isAggregateInvocations() {
         return aggregateInvocations;
     }
 
     public void setAggregateInvocations(boolean aggregateInvocations) {
         this.aggregateInvocations = aggregateInvocations;
-    }
-
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
     }
 
     public Instant getUpdated() {

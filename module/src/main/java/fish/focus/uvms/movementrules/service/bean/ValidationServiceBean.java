@@ -11,16 +11,6 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.bean;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import fish.focus.schema.exchange.module.v1.SetCommandRequest;
 import fish.focus.schema.exchange.movement.v1.MovementType;
 import fish.focus.schema.exchange.movement.v1.MovementTypeType;
@@ -33,7 +23,6 @@ import fish.focus.uvms.asset.client.model.PollType;
 import fish.focus.uvms.commons.notifications.NotificationMessage;
 import fish.focus.uvms.exchange.client.ExchangeRestClient;
 import fish.focus.uvms.exchange.model.mapper.ExchangeModuleRequestMapper;
-import fish.focus.wsdl.user.module.GetContactDetailResponse;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import fish.focus.uvms.movementrules.service.boundary.AuditServiceBean;
 import fish.focus.uvms.movementrules.service.boundary.ExchangeServiceBean;
@@ -50,21 +39,36 @@ import fish.focus.uvms.movementrules.service.event.TicketEvent;
 import fish.focus.uvms.movementrules.service.mapper.EmailMapper;
 import fish.focus.uvms.movementrules.service.mapper.ExchangeMovementMapper;
 import fish.focus.uvms.movementrules.service.message.producer.bean.IncidentProducer;
+import fish.focus.wsdl.user.module.GetContactDetailResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Stateless
-public class ValidationServiceBean  {
+public class ValidationServiceBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(ValidationServiceBean.class);
 
+    @Inject
+    ExchangeRestClient exchangeRestClient;
+
     @EJB
     private RulesDao rulesDao;
-    
+
     @Inject
     private UserServiceBean userService;
-    
+
     @Inject
     private ExchangeServiceBean exchangeService;
-    
+
     @Inject
     private AuditServiceBean auditService;
 
@@ -88,7 +92,7 @@ public class ValidationServiceBean  {
 
         CustomRule triggeredRule = getCustomRule(ruleGuid);
         triggeredRule.setLastTriggered(Instant.now());
-        
+
         Instant auditTimestamp = Instant.now();
 
         auditTimestamp = auditLog("Time to create/update ticket:", auditTimestamp);
@@ -156,14 +160,13 @@ public class ValidationServiceBean  {
         }
     }
 
-    private Ticket upsertTicket(CustomRule triggeredRule, MovementDetails movementDetails){
+    private Ticket upsertTicket(CustomRule triggeredRule, MovementDetails movementDetails) {
         if (triggeredRule != null && triggeredRule.isAggregateInvocations()) {
             return createTicketOrIncreaseCount(movementDetails, triggeredRule);
         } else {
             return createTicket(triggeredRule, movementDetails);
         }
     }
-
 
     private CustomRule getCustomRule(String ruleGuid) {
         try {
@@ -184,12 +187,12 @@ public class ValidationServiceBean  {
             return latestTicketForRule;
         }
     }
-    
+
     private void sendMailToSubscribers(CustomRule customRule, MovementDetails movementDetails) {
         if (customRule == null) {
             return;
         }
-        
+
         List<RuleSubscription> subscriptions = customRule.getRuleSubscriptionList();
         if (subscriptions != null) {
             for (RuleSubscription subscription : subscriptions) {
@@ -231,13 +234,10 @@ public class ValidationServiceBean  {
         }
         if (ActionType.SEND_ENTRY_REPORT.equals(actionType)) {
             movement.setMovementType(MovementTypeType.ENT);
-        } else if (ActionType.SEND_EXIT_REPORT.equals(actionType) ) {
+        } else if (ActionType.SEND_EXIT_REPORT.equals(actionType)) {
             movement.setMovementType(MovementTypeType.EXI);
         }
     }
-
-    @Inject
-    ExchangeRestClient exchangeRestClient;
 
     private void sendToEmail(String emailAddress, String ruleName, MovementDetails movementDetails) {
         LOG.info("Sending email to '{}'", emailAddress);
@@ -255,14 +255,14 @@ public class ValidationServiceBean  {
         LOG.info("No plugin of the correct type found. Nothing was sent.");
     }
 
-    private String createPollInternal(MovementDetails fact, String ruleName){
+    private String createPollInternal(MovementDetails fact, String ruleName) {
         try {
             String username = "Triggerd by rule: " + ruleName;
             String comment = "This poll was triggered by rule: " + ruleName + " on: " + Instant.now().toString() + " on Asset: " + fact.getAssetName();
 
             return assetClient.createPollForAsset(UUID.fromString(fact.getAssetGuid()), username, comment, PollType.AUTOMATIC_POLL);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             LOG.error("Error while sending rule-triggered poll: ", e);
             return "NOK " + e.getMessage();
         }
@@ -301,7 +301,8 @@ public class ValidationServiceBean  {
             auditService.sendAuditMessage(AuditObjectTypeEnum.TICKET, AuditOperationEnum.CREATE, createdTicket.getGuid().toString(), null, createdTicket.getUpdatedBy());
 
             return ticket;
-        } catch (Exception e) { //TODO: figure out if we are to have this kind of exception handling here and if we are to catch everything
+        } catch (Exception e) {
+            // TODO: figure out if we are to have this kind of exception handling here and if we are to catch everything
             LOG.error("[ Failed to create ticket! ] {}", e);
             return null;
         }
@@ -313,7 +314,7 @@ public class ValidationServiceBean  {
         List<UUID> validRuleGuids = rulesDao.getCustomRulesForTicketsByUser(userName);
         if (!validRuleGuids.isEmpty()) {
             List<String> validRuleStrings = new ArrayList<>();
-            for (UUID uuid: validRuleGuids) {
+            for (UUID uuid : validRuleGuids) {
                 validRuleStrings.add(uuid.toString());
             }
             return rulesDao.getNumberOfOpenTickets(validRuleStrings);

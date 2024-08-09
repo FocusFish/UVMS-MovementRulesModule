@@ -28,13 +28,13 @@ public class PreviousReportRestResourceTest extends BuildRulesRestDeployment {
     RulesValidator rulesValidator;
 
     @Before
-    public void initClass(){
+    public void initClass() {
         rulesValidator.updateCustomRules();
     }
 
     @Test
     @OperateOnDeployment("normal")
-    public void testGetAllPreviousReports(){
+    public void testGetAllPreviousReports() {
         MovementDetails movement = RulesTestHelper.createBasicMovementDetails();
 
         Response evaluate = getWebTarget()
@@ -52,7 +52,7 @@ public class PreviousReportRestResourceTest extends BuildRulesRestDeployment {
 
     @Test
     @OperateOnDeployment("normal")
-    public void testGetAllPreviousReports_VerifyMobileTerminalIdIsPresent(){
+    public void testGetAllPreviousReports_VerifyMobileTerminalIdIsPresent() {
         MovementDetails movement = RulesTestHelper.createBasicMovementDetails();
 
         Response evaluate = getWebTarget()
@@ -72,7 +72,7 @@ public class PreviousReportRestResourceTest extends BuildRulesRestDeployment {
 
     @Test
     @OperateOnDeployment("normal")
-    public void testDeleteAPreviousReport(){
+    public void testDeleteAPreviousReport() {
         MovementDetails movement = RulesTestHelper.createBasicMovementDetails();
         Response evaluate = getWebTarget()
                 .path("internal")
@@ -104,7 +104,7 @@ public class PreviousReportRestResourceTest extends BuildRulesRestDeployment {
 
     @Test
     @OperateOnDeployment("normal")
-    public void testDeleteNonExistantReport(){
+    public void testDeleteNonExistantReport() {
 
         UUID dummy = UUID.randomUUID();
 
@@ -121,7 +121,7 @@ public class PreviousReportRestResourceTest extends BuildRulesRestDeployment {
 
     }
 
-    private Response getAllPreviousReportByRest(){
+    private Response getAllPreviousReportByRest() {
         return getWebTarget()
                 .path("previousReports/list/")
                 .request(MediaType.APPLICATION_JSON)

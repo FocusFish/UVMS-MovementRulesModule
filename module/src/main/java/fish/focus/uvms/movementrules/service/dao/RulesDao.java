@@ -11,27 +11,27 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.dao;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
+import fish.focus.uvms.movementrules.service.entity.CustomRule;
+import fish.focus.uvms.movementrules.service.entity.PreviousReport;
+import fish.focus.uvms.movementrules.service.entity.RuleSubscription;
+import fish.focus.uvms.movementrules.service.entity.Ticket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import fish.focus.uvms.movementrules.service.constants.ServiceConstants;
-import fish.focus.uvms.movementrules.service.entity.CustomRule;
-import fish.focus.uvms.movementrules.service.entity.PreviousReport;
-import fish.focus.uvms.movementrules.service.entity.RuleSubscription;
-import fish.focus.uvms.movementrules.service.entity.Ticket;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
 
 @Stateless
 public class RulesDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(RulesDao.class);
-    
+
     @PersistenceContext
     private EntityManager em;
 
@@ -39,13 +39,13 @@ public class RulesDao {
         em.flush();
     }
 
-    public CustomRule createCustomRule(CustomRule entity){
+    public CustomRule createCustomRule(CustomRule entity) {
         em.persist(entity);
         return entity;
     }
 
     public CustomRule getCustomRuleByGuid(UUID guid) {
-            return em.find(CustomRule.class, guid);
+        return em.find(CustomRule.class, guid);
     }
 
     public void removeCustomRuleAfterTests(CustomRule customRule) {
@@ -56,7 +56,7 @@ public class RulesDao {
         em.remove(em.contains(ticket) ? ticket : em.merge(ticket));
     }
 
-    public Ticket getTicketByGuid(UUID guid){
+    public Ticket getTicketByGuid(UUID guid) {
         return em.find(Ticket.class, guid);
     }
 
@@ -79,7 +79,7 @@ public class RulesDao {
     }
 
 
-    public long getNumberOfOpenTickets(List<String> validRuleGuids){
+    public long getNumberOfOpenTickets(List<String> validRuleGuids) {
         try {
             TypedQuery<Long> query = em.createNamedQuery(Ticket.COUNT_OPEN_TICKETS, Long.class);
             query.setParameter("validRuleGuids", validRuleGuids);
@@ -89,7 +89,7 @@ public class RulesDao {
         }
     }
 
-    public Ticket getLatestTicketForRule(UUID ruleGuid){
+    public Ticket getLatestTicketForRule(UUID ruleGuid) {
         try {
             TypedQuery<Ticket> query = em.createNamedQuery(Ticket.FIND_LATEST_TICKET_FOR_RULE, Ticket.class);
             query.setParameter("ruleGuid", ruleGuid.toString());
@@ -129,7 +129,6 @@ public class RulesDao {
         query.setParameter("updatedBy", updatedBy);
         return query.getResultList();
     }
-
 
 
     public Ticket createTicket(Ticket ticket) {
@@ -219,12 +218,12 @@ public class RulesDao {
     }
 
     public void deletePreviousReport(PreviousReport report) {
-        if(report != null) {
+        if (report != null) {
             em.remove(report);
         }
     }
 
-    public long getNumberOfTicketsForRule(String ruleGuid){
+    public long getNumberOfTicketsForRule(String ruleGuid) {
         TypedQuery<Long> query = em.createNamedQuery(Ticket.COUNT_TICKETS_FOR_RULE, Long.class);
         query.setParameter("ruleGuid", ruleGuid);
         return query.getSingleResult();

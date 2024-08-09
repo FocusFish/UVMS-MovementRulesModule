@@ -11,8 +11,6 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.entity;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -45,7 +43,7 @@ public class Interval implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private CustomRule customRule;
 
-    public Interval copy (CustomRule newCustomRule){
+    public Interval copy(CustomRule newCustomRule) {
         Interval copy = new Interval();
         copy.setStart(start);
         copy.setEnd(end);

@@ -36,7 +36,6 @@ public enum TicketSearchField {
     }
 
     /**
-     *
      * @return The field name in the Ticket entity. Must be exact.
      */
     public String getFieldName() {
@@ -44,7 +43,6 @@ public enum TicketSearchField {
     }
 
     /**
-     *
      * @return
      */
     public TicketSearchTables getSearchTables() {
@@ -52,7 +50,6 @@ public enum TicketSearchField {
     }
 
     /**
-     *
      * @return
      */
     public Class getClazz() {

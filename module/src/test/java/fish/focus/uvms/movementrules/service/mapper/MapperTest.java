@@ -41,7 +41,7 @@ public class MapperTest {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void testEntityToModel() throws Exception {
         Integer id = 1;
         CustomRule entity = MockData.getCustomRuleEntity(id);
@@ -64,36 +64,36 @@ public class MapperTest {
 
         for (CustomRuleSegmentType segment : segments) {
             switch (segment.getOrder()) {
-            case "0":
-                assertSame("(", segment.getStartOperator());
-                assertSame(CriteriaType.ASSET, segment.getCriteria());
-                assertSame(SubCriteriaType.ASSET_CFR, segment.getSubCriteria());
-                assertSame(ConditionType.EQ, segment.getCondition());
-                assertSame("SWE111222", segment.getValue());
-                assertSame("", segment.getEndOperator());
-                assertSame(LogicOperatorType.OR, segment.getLogicBoolOperator());
-                break;
-            case "1":
-                assertSame("", segment.getStartOperator());
-                assertSame(CriteriaType.ASSET, segment.getCriteria());
-                assertSame(SubCriteriaType.ASSET_CFR, segment.getSubCriteria());
-                assertSame(ConditionType.EQ, segment.getCondition());
-                assertSame("SWE111333", segment.getValue());
-                assertSame(")", segment.getEndOperator());
-                assertSame(LogicOperatorType.AND, segment.getLogicBoolOperator());
-                break;
-            case "2":
-                assertSame("", segment.getStartOperator());
-                assertSame(CriteriaType.MOBILE_TERMINAL, segment.getCriteria());
-                assertSame(SubCriteriaType.MT_MEMBER_ID, segment.getSubCriteria());
-                assertSame(ConditionType.EQ, segment.getCondition());
-                assertSame("ABC99", segment.getValue());
-                assertSame("", segment.getEndOperator());
-                assertSame(LogicOperatorType.NONE, segment.getLogicBoolOperator());
-                break;
-            default:
-                Assert.fail();
-                break;
+                case "0":
+                    assertSame("(", segment.getStartOperator());
+                    assertSame(CriteriaType.ASSET, segment.getCriteria());
+                    assertSame(SubCriteriaType.ASSET_CFR, segment.getSubCriteria());
+                    assertSame(ConditionType.EQ, segment.getCondition());
+                    assertSame("SWE111222", segment.getValue());
+                    assertSame("", segment.getEndOperator());
+                    assertSame(LogicOperatorType.OR, segment.getLogicBoolOperator());
+                    break;
+                case "1":
+                    assertSame("", segment.getStartOperator());
+                    assertSame(CriteriaType.ASSET, segment.getCriteria());
+                    assertSame(SubCriteriaType.ASSET_CFR, segment.getSubCriteria());
+                    assertSame(ConditionType.EQ, segment.getCondition());
+                    assertSame("SWE111333", segment.getValue());
+                    assertSame(")", segment.getEndOperator());
+                    assertSame(LogicOperatorType.AND, segment.getLogicBoolOperator());
+                    break;
+                case "2":
+                    assertSame("", segment.getStartOperator());
+                    assertSame(CriteriaType.MOBILE_TERMINAL, segment.getCriteria());
+                    assertSame(SubCriteriaType.MT_MEMBER_ID, segment.getSubCriteria());
+                    assertSame(ConditionType.EQ, segment.getCondition());
+                    assertSame("ABC99", segment.getValue());
+                    assertSame("", segment.getEndOperator());
+                    assertSame(LogicOperatorType.NONE, segment.getLogicBoolOperator());
+                    break;
+                default:
+                    Assert.fail();
+                    break;
             }
 
         }
@@ -114,31 +114,31 @@ public class MapperTest {
 
         for (CustomRuleActionType action : actions) {
             switch (action.getOrder()) {
-            case "0":
-                assertSame(ActionType.SEND_REPORT, action.getAction());
-                assertSame("FLUX", action.getTarget());
-                assertSame("value1", action.getValue());
-                break;
-            case "1":
-                assertSame(ActionType.EMAIL, action.getAction());
-                assertSame("value2", action.getValue());
-                break;
-            case "2":
-                assertSame(ActionType.SEND_REPORT, action.getAction());
-                assertSame("NAF", action.getTarget());
-                assertSame("value3", action.getValue());
-                break;
-            default:
-                Assert.fail();
-                break;
+                case "0":
+                    assertSame(ActionType.SEND_REPORT, action.getAction());
+                    assertSame("FLUX", action.getTarget());
+                    assertSame("value1", action.getValue());
+                    break;
+                case "1":
+                    assertSame(ActionType.EMAIL, action.getAction());
+                    assertSame("value2", action.getValue());
+                    break;
+                case "2":
+                    assertSame(ActionType.SEND_REPORT, action.getAction());
+                    assertSame("NAF", action.getTarget());
+                    assertSame("value3", action.getValue());
+                    break;
+                default:
+                    Assert.fail();
+                    break;
             }
         }
 
     }
 
     @Test
-@OperateOnDeployment("normal")
-    public void testModelToEntity()  {
+    @OperateOnDeployment("normal")
+    public void testModelToEntity() {
         Integer id = 1;
         CustomRuleType model = MockData.getModel(id);
 
@@ -159,7 +159,7 @@ public class MapperTest {
 
     // TODO:
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void testEntityAndModelToEntity() {
         int id = 1;
         CustomRule entity = MockData.getCustomRuleEntity(id);
@@ -172,7 +172,7 @@ public class MapperTest {
 
     // TODO:
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void testEntityAndModelToModel() {
         int id = 1;
         CustomRule entity = MockData.getCustomRuleEntity(id);

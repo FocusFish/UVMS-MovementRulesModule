@@ -11,22 +11,19 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.boundary;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import fish.focus.schema.exchange.movement.v1.MovementSourceType;
+import fish.focus.uvms.commons.date.JsonBConfigurator;
+import fish.focus.uvms.movementrules.model.dto.MovementDetails;
+import fish.focus.uvms.spatial.model.schemas.*;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import fish.focus.schema.exchange.movement.v1.MovementSourceType;
-import fish.focus.uvms.commons.date.JsonBConfigurator;
-import fish.focus.uvms.spatial.model.schemas.Area;
-import fish.focus.uvms.spatial.model.schemas.AreaExtendedIdentifierType;
-import fish.focus.uvms.spatial.model.schemas.AreaType;
-import fish.focus.uvms.spatial.model.schemas.Location;
-import fish.focus.uvms.spatial.model.schemas.LocationType;
-import fish.focus.uvms.movementrules.model.dto.MovementDetails;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Stateless
 public class SpatialRestClient {
@@ -35,7 +32,7 @@ public class SpatialRestClient {
 
     @Resource(name = "java:global/spatial_endpoint")
     private String spatialEndpoint;
-    
+
     @PostConstruct
     public void initClient() {
         String url = spatialEndpoint + "/spatialnonsecure/json/";
@@ -46,10 +43,10 @@ public class SpatialRestClient {
                 .register(JsonBConfigurator.class)
                 .target(url);
     }
-    
+
     public void populateAreasAndAreaTransitions(MovementDetails movementDetails) {
-        AreaTransitionsDTO enrichmentCurrentPosition = getEnrichmentAndTransitions(movementDetails.getLatitude(), movementDetails.getLongitude(), 
-                                                                            movementDetails.getPreviousLatitude(), movementDetails.getPreviousLongitude());
+        AreaTransitionsDTO enrichmentCurrentPosition = getEnrichmentAndTransitions(movementDetails.getLatitude(), movementDetails.getLongitude(),
+                movementDetails.getPreviousLatitude(), movementDetails.getPreviousLongitude());
         if (enrichmentCurrentPosition.getSpatialEnrichmentRS().getClosestAreas() != null) {
             enrichWithCountryData(enrichmentCurrentPosition.getSpatialEnrichmentRS().getClosestAreas().getClosestAreas(), AreaType.COUNTRY, movementDetails);
         }
@@ -58,15 +55,14 @@ public class SpatialRestClient {
         }
         mapAreas(enrichmentCurrentPosition, movementDetails);
         mapAreaTransitions(enrichmentCurrentPosition, movementDetails);
-        
+
         if (!MovementSourceType.AIS.value().equals(movementDetails.getSource())) {
-            if ((movementDetails.getPreviousVMSLatitude() == null && movementDetails.getPreviousVMSLongitude() == null) 
-                    || (movementDetails.getLongitude().equals(movementDetails.getPreviousVMSLongitude()) 
+            if ((movementDetails.getPreviousVMSLatitude() == null && movementDetails.getPreviousVMSLongitude() == null)
+                    || (movementDetails.getLongitude().equals(movementDetails.getPreviousVMSLongitude())
                     && movementDetails.getLatitude().equals(movementDetails.getPreviousVMSLatitude()))) {
                 mapVMSAreaTransitions(enrichmentCurrentPosition, movementDetails);
-            }
-            else {
-                AreaTransitionsDTO enrichmentCurrentVMSPosition = getEnrichmentAndTransitions(movementDetails.getLatitude(), movementDetails.getLongitude(), 
+            } else {
+                AreaTransitionsDTO enrichmentCurrentVMSPosition = getEnrichmentAndTransitions(movementDetails.getLatitude(), movementDetails.getLongitude(),
                         movementDetails.getPreviousVMSLatitude(), movementDetails.getPreviousVMSLongitude());
                 mapVMSAreaTransitions(enrichmentCurrentVMSPosition, movementDetails);
             }
@@ -81,7 +77,7 @@ public class SpatialRestClient {
             }
         }
     }
-    
+
     private void mapAreaTransitions(AreaTransitionsDTO enrichmentCurrentPosition, MovementDetails movementDetails) {
         for (AreaExtendedIdentifierType area : enrichmentCurrentPosition.getEnteredAreas()) {
             movementDetails.getEntAreaCodes().add(area.getCode());
@@ -89,7 +85,7 @@ public class SpatialRestClient {
                 movementDetails.getEntAreaTypes().add(area.getAreaType().value());
             }
         }
-        
+
         for (AreaExtendedIdentifierType area : enrichmentCurrentPosition.getExitedAreas()) {
             movementDetails.getExtAreaCodes().add(area.getCode());
             if (!movementDetails.getExtAreaTypes().contains(area.getAreaType().value())) {
@@ -97,7 +93,7 @@ public class SpatialRestClient {
             }
         }
     }
-    
+
     private void mapVMSAreaTransitions(AreaTransitionsDTO enrichmentCurrentVMSPosition, MovementDetails movementDetails) {
         for (AreaExtendedIdentifierType area : enrichmentCurrentVMSPosition.getEnteredAreas()) {
             movementDetails.getVmsEntAreaCodes().add(area.getCode());
@@ -105,7 +101,7 @@ public class SpatialRestClient {
                 movementDetails.getVmsEntAreaTypes().add(area.getAreaType().value());
             }
         }
-        
+
         for (AreaExtendedIdentifierType area : enrichmentCurrentVMSPosition.getExitedAreas()) {
             movementDetails.getVmsExtAreaCodes().add(area.getCode());
             if (!movementDetails.getVmsExtAreaTypes().contains(area.getAreaType().value())) {
@@ -114,8 +110,8 @@ public class SpatialRestClient {
         }
     }
 
-    protected AreaTransitionsDTO getEnrichmentAndTransitions(Double latitude, Double longitude, 
-                                              Double previousLatitude, Double previousLongitude) {
+    protected AreaTransitionsDTO getEnrichmentAndTransitions(Double latitude, Double longitude,
+                                                             Double previousLatitude, Double previousLongitude) {
         return webTarget
                 .path("getEnrichmentAndTransitions")
                 .queryParam("firstLongitude", previousLongitude)
@@ -125,7 +121,7 @@ public class SpatialRestClient {
                 .request(MediaType.APPLICATION_JSON)
                 .get(AreaTransitionsDTO.class);
     }
-    
+
     private void enrichWithCountryData(List<Area> locations, AreaType areaType, MovementDetails movementDetails) {
         for (Area location : locations) {
             if (location.getAreaType() != null &&
@@ -134,7 +130,7 @@ public class SpatialRestClient {
             }
         }
     }
-    
+
     private void enrichWithPortData(List<Location> locations, LocationType type, MovementDetails movementDetails) {
         for (Location location : locations) {
             if (location.getLocationType().equals(type)) {
