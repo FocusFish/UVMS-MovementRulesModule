@@ -476,13 +476,13 @@ public class RulesServiceBean {
     }
 
 
-    // Triggered by RulesTimerBean
+    // Triggered by CheckCommunicationTask
     public List<PreviousReport> getPreviousMovementReports() {
         return rulesDao.getPreviousReportList();
     }
 
 
-    // Triggered by timer rule
+    // Triggered by CheckCommunicationTask
     public void timerRuleTriggered(String ruleName, PreviousReport previousReport) {
         LOG.info("Timer rule triggered for asset: {}", previousReport.getAssetGuid());
 
