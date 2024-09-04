@@ -23,29 +23,41 @@ import fish.focus.uvms.movementrules.service.entity.PreviousReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
+import javax.inject.Inject;
 import java.time.Instant;
 import java.util.List;
 
-public class CheckCommunicationTask implements Runnable {
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
+@Singleton
+public class CheckCommunicationTask {
     private static final long TWO_HOURS_IN_MILLISECONDS = 7200000;
 
     private static final Logger LOG = LoggerFactory.getLogger(CheckCommunicationTask.class);
 
-    private final RulesServiceBean rulesService;
-    private final ParameterService parameterService;
-    private final AssetClient assetClient;
-    private final RulesDao rulesDao;
+    private RulesServiceBean rulesService;
+    private ParameterService parameterService;
+    private AssetClient assetClient;
+    private RulesDao rulesDao;
 
-    CheckCommunicationTask(RulesServiceBean rulesService, ParameterService parameterService, AssetClient assetClient, RulesDao rulesDao) {
+    public CheckCommunicationTask() {
+    }
+
+    @Inject
+    public CheckCommunicationTask(RulesServiceBean rulesService, ParameterService parameterService, AssetClient assetClient, RulesDao rulesDao) {
         this.rulesService = rulesService;
         this.parameterService = parameterService;
         this.assetClient = assetClient;
         this.rulesDao = rulesDao;
     }
 
-    public void run() {
+    @Schedule(minute = "*/10", hour = "*", persistent = false)
+    public void runAssetNotSendingRule() {
         try {
-            LOG.debug("RulesTimerBean tick");
+            LOG.debug("Check for non-sending assets");
             // Get all previous reports from DB
             List<PreviousReport> previousReports = rulesService.getPreviousMovementReports();
             long threshold = getAssetNotSendingThreshold();
@@ -68,7 +80,7 @@ public class CheckCommunicationTask implements Runnable {
     private long getAssetNotSendingThreshold() {
         try {
             String thresholdSetting = parameterService.getStringValue(ParameterKey.ASSET_NOT_SENDING_THRESHOLD.getKey());
-            return Long.valueOf(thresholdSetting);
+            return Long.parseLong(thresholdSetting);
         } catch (Exception e) {
             LOG.error("Unable to get asset not sending threshold from parameter service due to {}. Returning two hours instead: ", e.getMessage(), e);
             return TWO_HOURS_IN_MILLISECONDS;
@@ -84,15 +96,25 @@ public class CheckCommunicationTask implements Runnable {
         }
 
         AssetDTO asset = assetClient.getAssetById(AssetIdentifier.GUID, previousReport.getAssetGuid());
-        if (Boolean.FALSE.equals(asset.getActive()) || Boolean.TRUE.equals(asset.isParked())) {
-            // asset is inactive or parked
+        if (asset == null || FALSE.equals(asset.getActive()) || TRUE.equals(asset.isParked())) {
+            // asset either doesn't exist or is inactive / parked
             // there should have been an 'Updated Asset' event that EventConsumer should have
             // picked up on and subsequently removed the previousReport entry. Do that now instead.
+            String cause = getCause(asset);
+            LOG.warn("Removing previousReport with id {} for asset {} since it {}", previousReport.getId(), previousReport.getAssetGuid(), cause);
             rulesDao.deletePreviousReport(previousReport);
             return;
         }
 
         sendIncidentMessage(previousReport, threshold, positionTime);
+    }
+
+    private static String getCause(AssetDTO asset) {
+        if (asset == null) {
+            return "doesn't exist";
+        }
+
+        return FALSE.equals(asset.getActive()) ? "is not active" : "is parked";
     }
 
     private void sendIncidentMessage(PreviousReport previousReport, long threshold, Instant positionTime) {
