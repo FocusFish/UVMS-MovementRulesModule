@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+
 import fish.focus.uvms.rest.security.UnionVMSFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +41,10 @@ import fish.focus.uvms.movementrules.service.message.producer.bean.RulesMessageP
 public class UserModuleMock implements MessageListener {
 
     final static Logger LOG = LoggerFactory.getLogger(UserModuleMock.class);
-    
+
     @Inject
     RulesMessageProducerBean messageProducer;
-    
+
     @Override
     public void onMessage(Message message) {
         TextMessage textMessage = (TextMessage) message;

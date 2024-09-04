@@ -2,10 +2,8 @@ package fish.focus.uvms.movementrules.service.dao;
 
 
 import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
-import fish.focus.uvms.movementrules.service.RulesTestHelper;
 import fish.focus.uvms.movementrules.service.TransactionalTests;
 import fish.focus.uvms.movementrules.service.constants.ServiceConstants;
-import fish.focus.uvms.movementrules.service.dao.RulesDao;
 import fish.focus.uvms.movementrules.service.entity.PreviousReport;
 import fish.focus.uvms.movementrules.service.entity.Ticket;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
@@ -28,7 +26,7 @@ public class RulesDaoTest extends TransactionalTests {
 
     @Test
     @OperateOnDeployment("normal")
-    public void deletePreviousReportTest(){
+    public void deletePreviousReportTest() {
         UUID assetGuid = UUID.randomUUID();
         PreviousReport report = new PreviousReport();
         report.setPositionTime(Instant.now());
@@ -45,7 +43,7 @@ public class RulesDaoTest extends TransactionalTests {
 
     @Test
     @OperateOnDeployment("normal")
-    public void getAssetNotSendingTicketsTest(){
+    public void getAssetNotSendingTicketsTest() {
         Instant from = Instant.now();
         Ticket ticket = createBasicTicket();
         ticket = dao.createTicket(ticket);
@@ -57,7 +55,7 @@ public class RulesDaoTest extends TransactionalTests {
         assertTrue(assetNotSendingTickets.stream().allMatch(t -> t.getRuleGuid().equals(ServiceConstants.ASSET_NOT_SENDING_RULE)));
     }
 
-    private Ticket createBasicTicket(){
+    private Ticket createBasicTicket() {
         Ticket ticket = new Ticket();
         ticket.setAssetGuid(UUID.randomUUID().toString());
         ticket.setCreatedDate(Instant.now());

@@ -2,6 +2,7 @@ package fish.focus.uvms.movementrules.service.message.producer.bean;
 
 import fish.focus.uvms.commons.message.api.MessageConstants;
 import fish.focus.uvms.commons.message.impl.AbstractProducer;
+
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -13,7 +14,7 @@ import javax.jms.Queue;
 @Stateless
 public class UserProducerBean extends AbstractProducer {
 
-    @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_USM)
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_USM)
     private Queue destination;
 
     @Override

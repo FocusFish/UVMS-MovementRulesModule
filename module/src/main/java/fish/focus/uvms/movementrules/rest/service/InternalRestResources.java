@@ -18,13 +18,13 @@ import javax.ws.rs.core.Response;
 
 @Path("/internal")
 @Stateless
-@Consumes(value = { MediaType.APPLICATION_JSON })
-@Produces(value = { MediaType.APPLICATION_JSON })
+@Consumes(value = {MediaType.APPLICATION_JSON})
+@Produces(value = {MediaType.APPLICATION_JSON})
 public class InternalRestResources {
 
     @Inject
     private RulesServiceBean rulesService;
-    
+
     @Inject
     private CustomRulesEvaluator customRuleEvaluator;
 
@@ -42,7 +42,7 @@ public class InternalRestResources {
         try {
             customRuleEvaluator.evaluate(movementDetails);
             return Response.ok().build();
-        }catch(Exception e){
+        } catch (Exception e) {
             return Response.serverError().entity(ExceptionUtils.getRootCause(e)).build();
         }
     }

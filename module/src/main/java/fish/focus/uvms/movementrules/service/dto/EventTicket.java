@@ -19,7 +19,7 @@ public class EventTicket {
     private Ticket ticket;
     private CustomRule customRule;
     private String pollId;
-    
+
     public EventTicket(Ticket ticket, CustomRule customRule) {
         this.ticket = ticket;
         this.customRule = customRule;
@@ -29,19 +29,22 @@ public class EventTicket {
     }
 
     public EventTicket(Ticket ticket, CustomRule customRule, String pollId) {
-        this(ticket,customRule);
+        this(ticket, customRule);
         this.pollId = pollId;
     }
-    
+
     public Ticket getTicket() {
         return ticket;
     }
+
     public void setTicket(Ticket ticket) {
         this.ticket = ticket;
     }
+
     public CustomRule getCustomRule() {
         return customRule;
     }
+
     public void setCustomRule(CustomRule customRule) {
         this.customRule = customRule;
     }

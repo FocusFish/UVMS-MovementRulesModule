@@ -11,9 +11,10 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.dto;
 
+import fish.focus.uvms.movementrules.service.entity.Ticket;
+
 import java.io.Serializable;
 import java.util.List;
-import fish.focus.uvms.movementrules.service.entity.Ticket;
 
 public class TicketListResponseDto implements Serializable {
 

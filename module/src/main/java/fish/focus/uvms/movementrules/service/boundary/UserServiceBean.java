@@ -11,16 +11,10 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.boundary;
 
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import fish.focus.uvms.commons.message.api.MessageConstants;
+import fish.focus.uvms.movementrules.model.mapper.JAXBMarshaller;
+import fish.focus.uvms.movementrules.service.message.consumer.RulesResponseConsumer;
+import fish.focus.uvms.movementrules.service.message.producer.bean.UserProducerBean;
 import fish.focus.uvms.user.model.exception.ModelMarshallException;
 import fish.focus.uvms.user.model.mapper.UserModuleRequestMapper;
 import fish.focus.wsdl.user.module.GetContactDetailResponse;
@@ -28,15 +22,22 @@ import fish.focus.wsdl.user.module.GetUserContextResponse;
 import fish.focus.wsdl.user.module.UserModuleMethod;
 import fish.focus.wsdl.user.types.UserContext;
 import fish.focus.wsdl.user.types.UserContextId;
-import fish.focus.uvms.movementrules.model.mapper.JAXBMarshaller;
-import fish.focus.uvms.movementrules.service.message.consumer.RulesResponseConsumer;
-import fish.focus.uvms.movementrules.service.message.producer.bean.UserProducerBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.TextMessage;
+import javax.xml.bind.JAXBException;
 
 @Stateless
 public class UserServiceBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceBean.class);
-    
+
     @Inject
     private RulesResponseConsumer consumer;
 
@@ -75,7 +76,7 @@ public class UserServiceBean {
         }
         return userContext;
     }
-    
+
     public String getOrganisationName(String username) throws ModelMarshallException, JMSException {
         GetContactDetailResponse userResponse = getContactDetails(username);
         if (userResponse != null && userResponse.getContactDetails() != null) {
@@ -84,7 +85,7 @@ public class UserServiceBean {
             return null;
         }
     }
-    
+
     public GetContactDetailResponse getContactDetails(String username) throws ModelMarshallException, JMSException {
         try {
             String userRequest = UserModuleRequestMapper.mapToGetContactDetailsRequest(username);

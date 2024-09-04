@@ -11,15 +11,16 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.mapper.search;
 
+import fish.focus.schema.movementrules.search.v1.CustomRuleListCriteria;
+import fish.focus.schema.movementrules.search.v1.CustomRuleSearchKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import fish.focus.schema.movementrules.search.v1.CustomRuleListCriteria;
-import fish.focus.schema.movementrules.search.v1.CustomRuleSearchKey;
 
 public class CustomRuleSearchFieldMapper {
 
@@ -56,7 +57,6 @@ public class CustomRuleSearchFieldMapper {
 
 
     /**
-     *
      * Creates the complete search SQL with joins and sets the values based on
      * the criteria
      *
@@ -162,11 +162,10 @@ public class CustomRuleSearchFieldMapper {
     /**
      * Created the Join statement based on the join type. The resulting String
      * can be:
-     *
+     * <p>
      * JOIN LEFT JOIN JOIN FETCH ( based on fetch )
      *
-     * @param fetch
-     *            create a JOIN FETCH or plain JOIN
+     * @param fetch create a JOIN FETCH or plain JOIN
      * @param type
      * @return
      */
@@ -201,7 +200,6 @@ public class CustomRuleSearchFieldMapper {
     }
 
     /**
-     *
      * Creates at String that sets values based on what class the SearchValue
      * has. A String class returns [ = 'value' ] A Integer returns [ = value ]
      * Date is specifically handled and can return [ >= 'datavalue' ] or [ <=
@@ -240,9 +238,8 @@ public class CustomRuleSearchFieldMapper {
     }
 
     /**
-     *
      * Builds a table alias for the query based on the search field
-     *
+     * <p>
      * EG [ theTableAlias.theColumnName ]
      *
      * @param field
@@ -255,7 +252,6 @@ public class CustomRuleSearchFieldMapper {
     }
 
     /**
-     *
      * Takes all the search values and categorizes them in lists to a key
      * according to the SearchField
      *
@@ -275,7 +271,6 @@ public class CustomRuleSearchFieldMapper {
     }
 
     /**
-     *
      * Converts List<CustomRuleListCriteria> to List<CustomRuleSearchValue> so that a JPQL query can
      * be built based on the criteria
      *
@@ -295,7 +290,7 @@ public class CustomRuleSearchFieldMapper {
                 CustomRuleSearchField field = mapCriteria(criteria.getKey());
                 searchFields.add(new CustomRuleSearchValue(field, criteria.getValue()));
             } catch (IllegalArgumentException ex) {
-                LOG.debug("[ Error with criteria {} when mapping to search field... continuing with other criteria ]" , criteria);
+                LOG.debug("[ Error with criteria {} when mapping to search field... continuing with other criteria ]", criteria);
             }
         }
 
@@ -303,7 +298,6 @@ public class CustomRuleSearchFieldMapper {
     }
 
     /**
-     *
      * Maps the Search Key to a SearchField.
      *
      * @param key

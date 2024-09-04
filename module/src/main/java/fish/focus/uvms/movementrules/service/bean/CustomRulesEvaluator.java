@@ -39,16 +39,16 @@ public class CustomRulesEvaluator {
     private static final Logger LOG = LoggerFactory.getLogger(CustomRulesEvaluator.class);
 
     private String localFlagstate;
-    
+
     @Inject
     private RulesValidator rulesValidator;
-    
+
     @EJB
     private ParameterService parameterService;
-    
+
     @Inject
     private SpatialRestClient spatialClient;
-    
+
     @Inject
     private RulesDao rulesDao;
 
@@ -61,22 +61,20 @@ public class CustomRulesEvaluator {
 
     @Inject
     private IncidentProducer incidentProducer;
-    
+
     public void evaluate(MovementDetails movementDetails) {
-        
         Long timeDiffPositionReport = timeDiffAndPersistPreviousReport(movementDetails);
 
         movementDetails.setTimeDiffPositionReport(timeDiffPositionReport);
 
         sendPositionToIncident(movementDetails);
-        
+
         spatialClient.populateAreasAndAreaTransitions(movementDetails);
-        
+
         rulesValidator.evaluate(movementDetails);
     }
-  
-    private Long timeDiffAndPersistPreviousReport(MovementDetails movementDetails) {
 
+    private Long timeDiffAndPersistPreviousReport(MovementDetails movementDetails) {
         String movementSource = movementDetails.getSource();
         String assetGuid = movementDetails.getAssetGuid();
         String movementId = movementDetails.getMovementGuid();
@@ -89,22 +87,22 @@ public class CustomRulesEvaluator {
         timeDiffInSeconds = timeDiff != null ? timeDiff / 1000 : null;
 
         // We only persist our own last communications that were from Inmarsat or Iridium.
-        if (isLocalFlagState(assetFlagState) && 
-                (movementSource.equals(MovementSourceType.INMARSAT_C.value()) 
+        if (isLocalFlagState(assetFlagState) &&
+                (movementSource.equals(MovementSourceType.INMARSAT_C.value())
                         || movementSource.equals(MovementSourceType.IRIDIUM.value()))) {
             persistLastCommunication(movementDetails);
         }
 
         return timeDiffInSeconds;
     }
-    
-    private void sendPositionToIncident(MovementDetails movementDetails){
-        if(shouldPositionBeSentToIncident(movementDetails)){
+
+    private void sendPositionToIncident(MovementDetails movementDetails) {
+        if (shouldPositionBeSentToIncident(movementDetails)) {
             incidentProducer.sendPositionToIncident(movementDetails);
         }
     }
 
-    private boolean shouldPositionBeSentToIncident(MovementDetails movementDetails){
+    private boolean shouldPositionBeSentToIncident(MovementDetails movementDetails) {
         return (movementDetails.isParked()
                 || (!movementDetails.getSource().equals(MovementSourceType.AIS.value()) && isLocalFlagState(movementDetails.getFlagState())));
     }
@@ -113,7 +111,7 @@ public class CustomRulesEvaluator {
         Long timeDiff = null;
         try {
             PreviousReport entity = rulesDao.getPreviousReportByAssetGuid(assetGuid);
-            if(entity == null){         //aka not local flag state and not AIS, see line 93
+            if (entity == null) {         //aka not local flag state and not AIS, see line 93
                 return null;
             }
 
@@ -126,9 +124,7 @@ public class CustomRulesEvaluator {
         return timeDiff;
     }
 
-
     private void persistLastCommunication(MovementDetails movementDetails) {
-
         String assetGuid = movementDetails.getAssetGuid();
         String movementId = movementDetails.getMovementGuid();
         String mobTermId = movementDetails.getMobileTerminalGuid();
@@ -140,7 +136,7 @@ public class CustomRulesEvaluator {
         }
         entity.setPositionTime(positionTime);
         entity.setAssetGuid(assetGuid);
-        if(movementId != null)
+        if (movementId != null)
             entity.setMovementGuid(UUID.fromString(movementId));
         if (mobTermId != null)
             entity.setMobTermGuid(UUID.fromString(mobTermId));
@@ -148,10 +144,10 @@ public class CustomRulesEvaluator {
         entity.setUpdatedBy("UVMS");
         rulesDao.updatePreviousReport(entity);
     }
-    
+
     private boolean isLocalFlagState(String flagState) {
         try {
-            if(localFlagstate == null || localFlagstate.length() > 3) {
+            if (localFlagstate == null || localFlagstate.length() > 3) {
                 localFlagstate = parameterService.getStringValue(ParameterKey.LOCAL_FLAGSTATE.getKey());
             }
             return flagState.equalsIgnoreCase(localFlagstate);
@@ -160,5 +156,4 @@ public class CustomRulesEvaluator {
             return false;
         }
     }
-
 }

@@ -11,8 +11,6 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.entity;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -62,7 +60,7 @@ public class RuleSegment implements Serializable {  //Type class is customRuleSe
     @ManyToOne(fetch = FetchType.LAZY)
     private CustomRule customRule;  //does not exist in type
 
-    public RuleSegment copy (CustomRule newCustomRule){
+    public RuleSegment copy(CustomRule newCustomRule) {
         RuleSegment rs = new RuleSegment();
         rs.setStartOperator(startOperator);
         rs.setCriteria(criteria);

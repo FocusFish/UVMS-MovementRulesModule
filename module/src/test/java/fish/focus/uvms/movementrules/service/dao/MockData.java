@@ -17,6 +17,7 @@ import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import fish.focus.uvms.movementrules.service.entity.Interval;
 import fish.focus.uvms.movementrules.service.entity.RuleAction;
 import fish.focus.uvms.movementrules.service.entity.RuleSegment;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ public class MockData {
         action2.setAction(ActionType.EMAIL);
         action2.setValue("value2");
         action2.setOrder("1");
-        
+
         CustomRuleActionType action3 = new CustomRuleActionType();
         action3.setAction(ActionType.SEND_REPORT);
         action3.setTarget("NAF");

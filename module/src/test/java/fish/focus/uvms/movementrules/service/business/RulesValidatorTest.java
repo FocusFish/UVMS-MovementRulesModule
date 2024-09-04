@@ -37,10 +37,10 @@ public class RulesValidatorTest extends TransactionalTests {
 
     @Inject
     RulesValidator rulesValidator;
-    
+
     @Inject
     ValidationServiceBean validationService;
-    
+
     @Inject
     RulesServiceBean rulesService;
 
@@ -55,9 +55,9 @@ public class RulesValidatorTest extends TransactionalTests {
     /*
      * Custom Rules
      */
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void evaluateMovementFactTriggerFlagStateRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         String flagstate = "SWE";
@@ -75,21 +75,21 @@ public class RulesValidatorTest extends TransactionalTests {
         segment.setCustomRule(customRule);
         customRule.getRuleSegmentList().add(segment);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         long ticketsBefore = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
-        
+
         MovementDetails fact = RulesTestHelper.createBasicMovementDetails();
         fact.setFlagState(flagstate);
         rulesValidator.evaluate(fact);
-        
+
         long ticketsAfter = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
         assertThat(ticketsAfter, is(ticketsBefore + 1));
-        
+
         assertCustomRuleWasTriggered(createdCustomRule.getGuid().toString(), timestamp);
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void evaluateMovementFactDontTriggerFlagStateRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         String flagstate = "SWE";
@@ -105,19 +105,19 @@ public class RulesValidatorTest extends TransactionalTests {
         segment.setCustomRule(customRule);
         customRule.getRuleSegmentList().add(segment);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         long ticketsBefore = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
-        
+
         MovementDetails fact = RulesTestHelper.createBasicMovementDetails();
         fact.setFlagState("TEST");
         rulesValidator.evaluate(fact);
-        
+
         long ticketsAfter = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
         assertThat(ticketsAfter, is(ticketsBefore));
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void evaluateMovementFactTriggerPositionTimeRuleTest() throws Exception {
         Instant positionTime = getTimestamp();
 
@@ -134,21 +134,21 @@ public class RulesValidatorTest extends TransactionalTests {
         segment.setCustomRule(customRule);
         customRule.getRuleSegmentList().add(segment);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         long ticketsBefore = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
-        
+
         MovementDetails fact = RulesTestHelper.createBasicMovementDetails();
         fact.setPositionTime(positionTime);
         rulesValidator.evaluate(fact);
-        
+
         long ticketsAfter = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
         assertThat(ticketsAfter, is(ticketsBefore + 1));
-        
+
         assertCustomRuleWasTriggered(createdCustomRule.getGuid().toString(), positionTime);
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void evaluateMovementFactTriggerAreaRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         String areaCode = "SWE";
@@ -166,21 +166,21 @@ public class RulesValidatorTest extends TransactionalTests {
         segment.setCustomRule(customRule);
         customRule.getRuleSegmentList().add(segment);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         long ticketsBefore = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
-        
+
         MovementDetails fact = RulesTestHelper.createBasicMovementDetails();
         fact.getAreaCodes().add(areaCode);
         rulesValidator.evaluate(fact);
-        
+
         long ticketsAfter = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
         assertThat(ticketsAfter, is(ticketsBefore + 1));
-        
+
         assertCustomRuleWasTriggered(createdCustomRule.getGuid().toString(), timestamp);
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void evaluateMovementFactTriggerAreaEntryRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         String areaCode = "SWE";
@@ -198,21 +198,21 @@ public class RulesValidatorTest extends TransactionalTests {
         segment.setCustomRule(customRule);
         customRule.getRuleSegmentList().add(segment);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         long ticketsBefore = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
-        
+
         MovementDetails fact = RulesTestHelper.createBasicMovementDetails();
         fact.getEntAreaCodes().add(areaCode);
         rulesValidator.evaluate(fact);
-        
+
         long ticketsAfter = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
         assertThat(ticketsAfter, is(ticketsBefore + 1));
-        
+
         assertCustomRuleWasTriggered(createdCustomRule.getGuid().toString(), timestamp);
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void evaluateMovementFactTriggerAreaExitRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         String areaCode = "SWE";
@@ -230,21 +230,21 @@ public class RulesValidatorTest extends TransactionalTests {
         segment.setCustomRule(customRule);
         customRule.getRuleSegmentList().add(segment);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         long ticketsBefore = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
-        
+
         MovementDetails fact = RulesTestHelper.createBasicMovementDetails();
         fact.getExtAreaCodes().add(areaCode);
         rulesValidator.evaluate(fact);
-        
+
         long ticketsAfter = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
         assertThat(ticketsAfter, is(ticketsBefore + 1));
-        
+
         assertCustomRuleWasTriggered(createdCustomRule.getGuid().toString(), timestamp);
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void evaluateMovementFactTriggerMTSerialNumberRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         String serialNumber = UUID.randomUUID().toString();
@@ -262,21 +262,21 @@ public class RulesValidatorTest extends TransactionalTests {
         segment.setCustomRule(customRule);
         customRule.getRuleSegmentList().add(segment);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         long ticketsBefore = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
-        
+
         MovementDetails fact = RulesTestHelper.createBasicMovementDetails();
         fact.setMobileTerminalSerialNumber(serialNumber);
         rulesValidator.evaluate(fact);
-        
+
         long ticketsAfter = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
         assertThat(ticketsAfter, is(ticketsBefore + 1));
-        
+
         assertCustomRuleWasTriggered(createdCustomRule.getGuid().toString(), timestamp);
     }
-    
+
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void evaluateMovementFactTriggerFlagStateAndAreaRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         String flagstate = "SWE";
@@ -306,22 +306,22 @@ public class RulesValidatorTest extends TransactionalTests {
         areaSegment.setCustomRule(customRule);
         customRule.getRuleSegmentList().add(areaSegment);
         CustomRule createdCustomRule = rulesService.createCustomRule(customRule, "", "");
-        
+
         long ticketsBefore = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
-        
+
         MovementDetails fact = RulesTestHelper.createBasicMovementDetails();
         fact.setFlagState(flagstate);
         fact.setAreaCodes(Arrays.asList(area));
         rulesValidator.evaluate(fact);
-        
+
         long ticketsAfter = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
         assertThat(ticketsAfter, is(ticketsBefore + 1));
-        
+
         assertCustomRuleWasTriggered(createdCustomRule.getGuid().toString(), timestamp);
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void ruleTriggerPollTest() throws Exception {
         Instant timestamp = getTimestamp();
         String flagstate = "SWE";
@@ -370,7 +370,7 @@ public class RulesValidatorTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void positionTimeB4Test() throws Exception {
         Instant timestamp = getTimestamp();
 
@@ -401,7 +401,7 @@ public class RulesValidatorTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void positionTimeAfterTest() throws Exception {
         Instant timestamp = getTimestamp();
 
@@ -437,7 +437,7 @@ public class RulesValidatorTest extends TransactionalTests {
      */
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void triggerVicinityBoatRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         UUID vicOfID = UUID.randomUUID();
@@ -485,7 +485,7 @@ public class RulesValidatorTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void triggerVicinityDistanceRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         UUID vicOfID = UUID.randomUUID();
@@ -533,7 +533,7 @@ public class RulesValidatorTest extends TransactionalTests {
 
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void triggerVicinityBoatRuleMoreComplexORRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         UUID vicOfID = UUID.randomUUID();
@@ -607,7 +607,7 @@ public class RulesValidatorTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void triggerVicinityBoatRuleMoreComplexANDRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         UUID vicOfID = UUID.randomUUID();
@@ -708,7 +708,7 @@ public class RulesValidatorTest extends TransactionalTests {
 
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void triggerVicinityBoatRuleManyParenthesisRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         UUID vicOfID = UUID.randomUUID();
@@ -785,7 +785,7 @@ public class RulesValidatorTest extends TransactionalTests {
     }
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void triggerVicinityBoatRuleManyParenthesisInFrontOfVicinityRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         UUID vicOfID = UUID.randomUUID();
@@ -851,7 +851,7 @@ public class RulesValidatorTest extends TransactionalTests {
 
 
     @Test
-    @OperateOnDeployment ("normal")
+    @OperateOnDeployment("normal")
     public void triggerVicinityBoatRuleSeveralBoatsInProximityRuleTest() throws Exception {
         Instant timestamp = getTimestamp();
         UUID vicOfID = UUID.randomUUID();
@@ -909,14 +909,14 @@ public class RulesValidatorTest extends TransactionalTests {
         ticketsAfter = validationService.getNumberOfOpenTickets(customRule.getUpdatedBy());
         assertThat(ticketsAfter, is(ticketsBefore + 1));
     }
-    
+
     private void assertCustomRuleWasTriggered(String ruleGuid, Instant fromDate) throws Exception {
         CustomRule customRule = rulesService.getCustomRuleByGuid(UUID.fromString(ruleGuid));
         assertThat(customRule.getLastTriggered(), is(notNullValue()));
         assertTrue(customRule.getLastTriggered().isAfter(fromDate)
                 || customRule.getLastTriggered().equals(fromDate));
     }
-    
+
     private Instant getTimestamp() {
         return Instant.now().truncatedTo(ChronoUnit.SECONDS);
     }

@@ -12,6 +12,7 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package fish.focus.uvms.movementrules.service.message;
 
 import java.util.Date;  //leave be for now
+
 import fish.focus.schema.movementrules.asset.v1.AssetId;
 import fish.focus.schema.movementrules.asset.v1.AssetIdList;
 import fish.focus.schema.movementrules.asset.v1.AssetIdType;

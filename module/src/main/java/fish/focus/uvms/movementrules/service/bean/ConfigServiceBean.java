@@ -3,6 +3,7 @@ package fish.focus.uvms.movementrules.service.bean;
 import fish.focus.schema.movementrules.customrule.v1.*;
 import fish.focus.uvms.movementrules.service.dto.MainCriteria;
 import fish.focus.uvms.movementrules.service.dto.SubCriteria;
+
 import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,10 +52,10 @@ public class ConfigServiceBean {
 
     public Map<ActionType, Boolean> getActions() {
         return Arrays.stream(ActionType.values())
-                .collect(Collectors.toMap(Function.identity(), 
-                        a -> !(a.equals(ActionType.MANUAL_POLL) || 
-                             a.equals(ActionType.CREATE_TICKET) ||
-                             a.equals(ActionType.CREATE_INCIDENT))));
+                .collect(Collectors.toMap(Function.identity(),
+                        a -> !(a.equals(ActionType.MANUAL_POLL) ||
+                                a.equals(ActionType.CREATE_TICKET) ||
+                                a.equals(ActionType.CREATE_INCIDENT))));
     }
 
     private ArrayList<String> getConditionsByCriteria(SubCriteria subCriteria) {

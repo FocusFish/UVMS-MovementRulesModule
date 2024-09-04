@@ -11,38 +11,38 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package fish.focus.uvms.movementrules.service.business;
 
+import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
+import fish.focus.uvms.movementrules.service.entity.CustomRule;
+import fish.focus.uvms.movementrules.service.entity.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
+import javax.inject.Inject;
 import java.time.Instant;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
-import fish.focus.uvms.movementrules.service.bean.ValidationServiceBean;
-import fish.focus.uvms.movementrules.service.entity.CustomRule;
-import fish.focus.uvms.movementrules.service.entity.Interval;
-
-public class CheckRulesChangesTask implements Runnable {
+@Singleton
+public class CheckRulesChangesTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(CheckRulesChangesTask.class);
 
-    ValidationServiceBean validationService;
-    RulesValidator rulesValidator;
-    RulesServiceBean rulesService;
+    private RulesValidator rulesValidator;
+    private RulesServiceBean rulesService;
 
-    public CheckRulesChangesTask(ValidationServiceBean validationService, RulesValidator rulesValidator, RulesServiceBean rulesService) {
-        this.validationService = validationService;
+    public CheckRulesChangesTask() {
+    }
+
+    @Inject
+    public CheckRulesChangesTask(RulesValidator rulesValidator, RulesServiceBean rulesService) {
         this.rulesValidator = rulesValidator;
         this.rulesService = rulesService;
     }
 
-    @Override
-    public void run() {
-        clearCustomRules();
-    }
-
-    private void clearCustomRules()  {
+    @Schedule(minute = "*/10", hour = "*", persistent = false)
+    public void clearCustomRules() {
         LOG.debug("Looking outdated custom rules");
         List<CustomRule> customRules = rulesService.getRunnableCustomRules();
         boolean updateNeeded = false;
@@ -50,7 +50,7 @@ public class CheckRulesChangesTask implements Runnable {
             // If there are no time intervals, we do not need to check if the rule should be inactivated.
             boolean inactivate = !rule.getIntervals().isEmpty();
             Optional<Instant> latest = rule.getIntervals().stream().map(Interval::getEnd).max(Instant::compareTo);
-            if(latest.isPresent()){
+            if (latest.isPresent()) {
                 Instant end = latest.get();
                 Instant now = Instant.now();
                 if (end.isAfter(now)) {

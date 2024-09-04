@@ -30,10 +30,10 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
 
     @Inject
     private CustomRulesEvaluator customRulesEvaluator;
-    
+
     @Inject
     private RulesServiceBean rulesService;
-    
+
     @Inject
     private RulesValidator rulesValidator;
 
@@ -44,12 +44,12 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         userTransaction.commit();
         userTransaction.begin();
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void evaluateMovementAndVerifyReportCreated() {
         List<PreviousReport> previousReportsBefore = rulesService.getPreviousMovementReports();
-        
+
         MovementDetails movementDetails = getMovementDetails();
         customRulesEvaluator.evaluate(movementDetails);
 
@@ -64,7 +64,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         String flagState = "SWE";
         MovementDetails movementDetails = getMovementDetails();
         movementDetails.setFlagState(flagState);
-        
+
         CustomRule customRule = RulesTestHelper.createBasicCustomRule();
         List<RuleSegment> segments = new ArrayList<>();
         RuleSegment segment = new RuleSegment();
@@ -78,13 +78,13 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         segments.add(segment);
         customRule.setRuleSegmentList(segments);
         rulesService.createCustomRule(customRule, "", "");
-        
+
         customRulesEvaluator.evaluate(movementDetails);
-        
+
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
         assertThat(tickets.size(), is(1));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void evaluateMovementTriggerAreaRule() throws Exception {
@@ -92,7 +92,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         // AreaA
         movementDetails.setLongitude(1d);
         movementDetails.setLatitude(1d);
-        
+
         CustomRule customRule = RulesTestHelper.createBasicCustomRule();
         List<RuleSegment> segments = new ArrayList<>();
         RuleSegment segment = new RuleSegment();
@@ -106,13 +106,13 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         segments.add(segment);
         customRule.setRuleSegmentList(segments);
         rulesService.createCustomRule(customRule, "", "");
-        
+
         customRulesEvaluator.evaluate(movementDetails);
-        
+
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
         assertThat(tickets.size(), is(1));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void evaluateMovementTriggerAreaEntryRule() throws Exception {
@@ -120,7 +120,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         // AreaA
         movementDetails.setLongitude(1d);
         movementDetails.setLatitude(1d);
-        
+
         CustomRule customRule = RulesTestHelper.createBasicCustomRule();
         List<RuleSegment> segments = new ArrayList<>();
         RuleSegment segment = new RuleSegment();
@@ -134,13 +134,13 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         segments.add(segment);
         customRule.setRuleSegmentList(segments);
         rulesService.createCustomRule(customRule, "", "");
-        
+
         customRulesEvaluator.evaluate(movementDetails);
-        
+
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
         assertThat(tickets.size(), is(1));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void evaluateMovementTriggerAreaExitRule() throws Exception {
@@ -151,7 +151,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         // AreaB
         movementDetails.setPreviousLatitude(-1d);
         movementDetails.setPreviousLongitude(1d);
-        
+
         CustomRule customRule = RulesTestHelper.createBasicCustomRule();
         List<RuleSegment> segments = new ArrayList<>();
         RuleSegment segment = new RuleSegment();
@@ -165,13 +165,13 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         segments.add(segment);
         customRule.setRuleSegmentList(segments);
         rulesService.createCustomRule(customRule, "", "");
-        
+
         customRulesEvaluator.evaluate(movementDetails);
-        
+
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
         assertThat(tickets.size(), is(1));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void evaluateMovementTriggerAreaEntRuleWithPrevousPosition() throws Exception {
@@ -182,7 +182,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         // AreaB
         movementDetails.setPreviousLatitude(-1d);
         movementDetails.setPreviousLongitude(1d);
-        
+
         CustomRule customRule = RulesTestHelper.createBasicCustomRule();
         List<RuleSegment> segments = new ArrayList<>();
         RuleSegment segment = new RuleSegment();
@@ -196,13 +196,13 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         segments.add(segment);
         customRule.setRuleSegmentList(segments);
         rulesService.createCustomRule(customRule, "", "");
-        
+
         customRulesEvaluator.evaluate(movementDetails);
-        
+
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
         assertThat(tickets.size(), is(1));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void evaluateMovementTriggerVMSAreaExitRule() throws Exception {
@@ -215,7 +215,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         movementDetails.setPreviousLongitude(1d);
         movementDetails.setPreviousVMSLatitude(-1d);
         movementDetails.setPreviousVMSLongitude(1d);
-        
+
         CustomRule customRule = RulesTestHelper.createBasicCustomRule();
         List<RuleSegment> segments = new ArrayList<>();
         RuleSegment segment = new RuleSegment();
@@ -229,13 +229,13 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         segments.add(segment);
         customRule.setRuleSegmentList(segments);
         rulesService.createCustomRule(customRule, "", "");
-        
+
         customRulesEvaluator.evaluate(movementDetails);
-        
+
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
         assertThat(tickets.size(), is(1));
     }
-    
+
     @Test
     @OperateOnDeployment("normal")
     public void evaluateMovementTriggerVMSAreaEntRuleWithPrevousPosition() throws Exception {
@@ -248,7 +248,7 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         movementDetails.setPreviousLongitude(1d);
         movementDetails.setPreviousVMSLatitude(-1d);
         movementDetails.setPreviousVMSLongitude(1d);
-        
+
         CustomRule customRule = RulesTestHelper.createBasicCustomRule();
         List<RuleSegment> segments = new ArrayList<>();
         RuleSegment segment = new RuleSegment();
@@ -262,13 +262,13 @@ public class CustomRulesEvaluatorTest extends TransactionalTests {
         segments.add(segment);
         customRule.setRuleSegmentList(segments);
         rulesService.createCustomRule(customRule, "", "");
-        
+
         customRulesEvaluator.evaluate(movementDetails);
-        
+
         List<Ticket> tickets = rulesService.getTicketsByMovements(Arrays.asList(movementDetails.getMovementGuid()));
         assertThat(tickets.size(), is(1));
     }
-    
+
     private MovementDetails getMovementDetails() {
         MovementDetails movementDetails = new MovementDetails();
         movementDetails.setMovementGuid(UUID.randomUUID().toString());

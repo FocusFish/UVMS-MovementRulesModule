@@ -17,5 +17,6 @@ import javax.jms.JMSException;
 @Local
 public interface RulesResponseConsumer {
     <T> T getMessage(String correlationId, Class<T> type) throws JMSException;
+
     <T> T getMessage(String correlationId, Class<T> type, Long timeoutInMillis) throws JMSException;
 }

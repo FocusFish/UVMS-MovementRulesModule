@@ -1,7 +1,5 @@
 package fish.focus.uvms.movementrules.service.message.producer.bean;
 
-import fish.focus.schema.movementrules.movement.v1.MovementSourceType;
-import fish.focus.schema.movementrules.movement.v1.MovementTypeType;
 import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
 import fish.focus.uvms.commons.date.JsonBConfigurator;
 import fish.focus.uvms.commons.message.api.MessageConstants;
@@ -71,15 +69,15 @@ public class IncidentProducer {
         }
     }
 
-    private IncidentType determineIncidentType(EventTicket eventTicket){
-        if(ServiceConstants.ASSET_NOT_SENDING_RULE.equals(eventTicket.getTicket().getRuleGuid())){
+    private IncidentType determineIncidentType(EventTicket eventTicket) {
+        if (ServiceConstants.ASSET_NOT_SENDING_RULE.equals(eventTicket.getTicket().getRuleGuid())) {
             return IncidentType.ASSET_NOT_SENDING;
         } else {
             return null;   //not really a lot of choice here.....
         }
     }
 
-    private IncidentTicketDto mapToIncidentTicket(EventTicket eventTicket, IncidentType ticketType){
+    private IncidentTicketDto mapToIncidentTicket(EventTicket eventTicket, IncidentType ticketType) {
         IncidentTicketDto dto = new IncidentTicketDto();
         Ticket ticket = eventTicket.getTicket();
         dto.setAssetId(ticket.getAssetGuid());
@@ -102,7 +100,7 @@ public class IncidentProducer {
         return dto;
     }
 
-    private IncidentTicketDto mapToIncidentTicket(MovementDetails movementDetails){
+    private IncidentTicketDto mapToIncidentTicket(MovementDetails movementDetails) {
         IncidentTicketDto dto = new IncidentTicketDto();
         dto.setAssetId(movementDetails.getAssetGuid());
         dto.setChannelId(movementDetails.getChannelGuid());

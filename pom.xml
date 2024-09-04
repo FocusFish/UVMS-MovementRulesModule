@@ -1,21 +1,22 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
-        <version>3.22</version>
+        <version>3.24</version>
     </parent>
 
     <groupId>fish.focus.uvms.movement-rules</groupId>
     <artifactId>movement-rules</artifactId>
-    <version>2.4.21</version>
+    <version>2.4.22</version>
     <packaging>pom</packaging>
 
     <properties>
         <drools.version>7.73.0.Final</drools.version>
 
-        <uvms.pom.version>3.22</uvms.pom.version>
+        <uvms.pom.version>3.24</uvms.pom.version>
         <exchange.model.version>5.3.30</exchange.model.version>
         <user.model.version>2.2.6</user.model.version>
         <audit.model.version>4.3.12</audit.model.version>
@@ -31,7 +32,7 @@
 
         <installAtEnd>false</installAtEnd>
 
-        <docker.dev.version>4.2.35</docker.dev.version>
+        <docker.dev.version>4.2.37</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>movementrules</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>movementrules</docker.liquibase.db.passwd>
@@ -39,24 +40,24 @@
 
     <dependencyManagement>
         <dependencies>
-        	<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>${uvms.pom.version}</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>${uvms.pom.version}</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>${uvms.pom.version}</version>
-				<type>pom</type>
-			</dependency>
+            <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-gis-deps</artifactId>
+                <version>${uvms.pom.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-monitoring-deps</artifactId>
+                <version>${uvms.pom.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-arquillian-deps</artifactId>
+                <version>${uvms.pom.version}</version>
+                <type>pom</type>
+            </dependency>
             <dependency>
                 <groupId>fish.focus.uvms.maven</groupId>
                 <artifactId>uvms-pom-java11-deps</artifactId>
@@ -64,10 +65,10 @@
                 <type>pom</type>
             </dependency>
             <dependency>
-	            <groupId>fish.focus.uvms.commons</groupId>
-	            <artifactId>uvms-commons-message</artifactId>
-				<version>${uvms.common.version}</version>
-			</dependency>
+                <groupId>fish.focus.uvms.commons</groupId>
+                <artifactId>uvms-commons-message</artifactId>
+                <version>${uvms.common.version}</version>
+            </dependency>
             <dependency>
                 <groupId>fish.focus.uvms.commons</groupId>
                 <artifactId>uvms-commons-date</artifactId>
@@ -101,8 +102,8 @@
     </scm>
 
     <modules>
-		<module>LIQUIBASE</module>
-		<module>model</module>
+        <module>LIQUIBASE</module>
+        <module>model</module>
         <module>module</module>
     </modules>
 </project>

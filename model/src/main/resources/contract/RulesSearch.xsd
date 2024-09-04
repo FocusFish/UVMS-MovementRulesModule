@@ -18,7 +18,8 @@
     <xsd:complexType name="CustomRuleQuery">
         <xsd:sequence>
             <xsd:element name="pagination" type="search:ListPagination" minOccurs="1" maxOccurs="1"/>
-            <xsd:element name="customRuleSearchCriteria" type="search:CustomRuleListCriteria" minOccurs="1" maxOccurs="unbounded"/>
+            <xsd:element name="customRuleSearchCriteria" type="search:CustomRuleListCriteria" minOccurs="1"
+                         maxOccurs="unbounded"/>
             <xsd:element name="dynamic" type="xsd:boolean"/>
         </xsd:sequence>
     </xsd:complexType>
@@ -47,7 +48,8 @@
     <xsd:complexType name="AlarmQuery">
         <xsd:sequence>
             <xsd:element name="pagination" type="search:ListPagination" minOccurs="1" maxOccurs="1"/>
-            <xsd:element name="alarmSearchCriteria" type="search:AlarmListCriteria" minOccurs="1" maxOccurs="unbounded"/>
+            <xsd:element name="alarmSearchCriteria" type="search:AlarmListCriteria" minOccurs="1"
+                         maxOccurs="unbounded"/>
             <xsd:element name="dynamic" type="xsd:boolean"/>
         </xsd:sequence>
     </xsd:complexType>
@@ -77,7 +79,8 @@
     <xsd:complexType name="TicketQuery">
         <xsd:sequence>
             <xsd:element name="pagination" type="search:ListPagination" minOccurs="1" maxOccurs="1"/>
-            <xsd:element name="ticketSearchCriteria" type="search:TicketListCriteria" minOccurs="1" maxOccurs="unbounded"/>
+            <xsd:element name="ticketSearchCriteria" type="search:TicketListCriteria" minOccurs="1"
+                         maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -95,5 +98,5 @@
             <xsd:element name="listSize" type="xsd:int" minOccurs="1" maxOccurs="1"/>
         </xsd:sequence>
     </xsd:complexType>
-    
+
 </xsd:schema>

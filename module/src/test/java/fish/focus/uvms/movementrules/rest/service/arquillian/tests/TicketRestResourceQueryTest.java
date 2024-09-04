@@ -241,7 +241,7 @@ public class TicketRestResourceQueryTest extends BuildRulesRestDeployment {
         return customRule;
     }
 
-    private GetTicketListByQueryResponse sendTicketQuery(TicketQuery query){
+    private GetTicketListByQueryResponse sendTicketQuery(TicketQuery query) {
         GetTicketListByQueryResponse ticketList = getWebTarget()
                 .path("tickets/list/" + "testUser")
                 .request(MediaType.APPLICATION_JSON)

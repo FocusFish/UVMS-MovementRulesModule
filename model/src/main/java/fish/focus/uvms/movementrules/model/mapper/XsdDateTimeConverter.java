@@ -12,16 +12,17 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 
 import javax.xml.bind.DatatypeConverter;
-import java.util.Date;  //leave be for now
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
  * Created by osdjup on 2016-09-01.
  */
 public class XsdDateTimeConverter {
-    
-    private XsdDateTimeConverter() {}
-    
+
+    private XsdDateTimeConverter() {
+    }
+
     public static Date unmarshal(String dateTime) {
         return DatatypeConverter.parseDate(dateTime).getTime();
     }

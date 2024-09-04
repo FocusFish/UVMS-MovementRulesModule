@@ -12,7 +12,6 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package fish.focus.uvms.movementrules.service.entity;
 
 import fish.focus.schema.movementrules.customrule.v1.SubscriptionTypeType;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -60,7 +59,9 @@ public class RuleSubscription implements Serializable {
         this.type = type;
     }
 
-    public void setType(SubscriptionTypeType type) {this.type = type.value();}
+    public void setType(SubscriptionTypeType type) {
+        this.type = type.value();
+    }
 
     public String getOwner() {
         return owner;

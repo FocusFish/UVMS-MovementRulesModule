@@ -24,6 +24,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.UUID;
 
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,11 +40,6 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
 
     private static final String INCIDENT_EVENT = "IncidentEvent";
 
-    private JMSHelper jmsHelper = new JMSHelper();
-
-    @Inject
-    RulesServiceBean rulesService;
-
     @Inject
     ParameterService parameterService;
 
@@ -50,7 +47,13 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     AssetClient assetClient;
 
     @Inject
+    RulesServiceBean rulesServiceBean;
+
+    @Inject
     RulesDao rulesDao;
+
+    private CheckCommunicationTask checkCommunicationTask;
+    private final JMSHelper jmsHelper = new JMSHelper();
 
     @Before
     public void setThreshold() throws Exception {
@@ -65,6 +68,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     @Before
     public void initMocks() {
         MockitoAnnotations.initMocks(this);
+        checkCommunicationTask = new CheckCommunicationTask(rulesServiceBean, parameterService, assetClient, rulesDao);
     }
 
     @Test
@@ -75,7 +79,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         var assetDto = getBasicAsset(previousReport.getAssetGuid());
         when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao).run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
@@ -86,12 +90,13 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     public void runWithThresholdPassed() throws Exception {
         System.setProperty("AssetPollEndpointReached", "False");
         PreviousReport previousReport = getBasicPreviousReport();
-        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
+        Instant oneHourAgo = Instant.now().minus(1, HOURS);
+        previousReport.setPositionTime(oneHourAgo);
         rulesDao.updatePreviousReport(previousReport);
         var assetDto = getBasicAsset(previousReport.getAssetGuid());
         when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao).run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
@@ -101,13 +106,14 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     @OperateOnDeployment("normal")
     public void runWithThresholdPassedAndInactiveAsset() {
         PreviousReport previousReport = getBasicPreviousReport();
-        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
+        Instant oneHourAgo = Instant.now().minus(1, HOURS);
+        previousReport.setPositionTime(oneHourAgo);
         rulesDao.updatePreviousReport(previousReport);
         var assetDto = getBasicAsset(previousReport.getAssetGuid());
         assetDto.setActive(false);
         when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao).run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         PreviousReport noPreviousReport = rulesDao.getPreviousReportByAssetGuid(assetDto.getId().toString());
         assertThat("Should be no previous report", noPreviousReport, is(nullValue()));
@@ -117,13 +123,14 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     @OperateOnDeployment("normal")
     public void runWithThresholdPassedAndParkedAsset() {
         PreviousReport previousReport = getBasicPreviousReport();
-        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
+        Instant oneHourAgo = Instant.now().minus(1, HOURS);
+        previousReport.setPositionTime(oneHourAgo);
         rulesDao.updatePreviousReport(previousReport);
         var assetDto = getBasicAsset(previousReport.getAssetGuid());
         assetDto.setParked(true);
         when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao).run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         PreviousReport noPreviousReport = rulesDao.getPreviousReportByAssetGuid(assetDto.getId().toString());
         assertThat("Should be no previous report", noPreviousReport, is(nullValue()));
@@ -133,43 +140,44 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     @OperateOnDeployment("normal")
     public void runTwiceWithThresholdPassed() throws Exception {
         PreviousReport previousReport = getBasicPreviousReport();
-        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
+        Instant oneHourAgo = Instant.now().minus(1, HOURS);
+        previousReport.setPositionTime(oneHourAgo);
         rulesDao.updatePreviousReport(previousReport);
         var assetDto = getBasicAsset(previousReport.getAssetGuid());
         when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
-
     }
 
     @Test
     @OperateOnDeployment("normal")
     public void updateThresholdPassed() throws Exception {
         PreviousReport previousReport = getBasicPreviousReport();
-        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
+        Instant oneHourAgo = Instant.now().minus(1, HOURS);
+        previousReport.setPositionTime(oneHourAgo);
         rulesDao.updatePreviousReport(previousReport);
         var assetDto = getBasicAsset(previousReport.getAssetGuid());
         when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
 
         previousReport = rulesDao.getPreviousReportByAssetGuid(previousReport.getAssetGuid());
-        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - 3 * ONE_HOUR_IN_MILLISECONDS));
-        previousReport.setUpdated(Instant.ofEpochMilli(System.currentTimeMillis() - 2 * ONE_HOUR_IN_MILLISECONDS));
+        Instant threeHoursAgo = Instant.now().minus(3, HOURS);
+        previousReport.setPositionTime(threeHoursAgo);
+        Instant twoHoursAgo = Instant.now().minus(1, HOURS);
+        previousReport.setUpdated(twoHoursAgo);
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
@@ -179,13 +187,13 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     @OperateOnDeployment("normal")
     public void checkPreviousReportUpdateTimeUpdated() {
         PreviousReport previousReport = getBasicPreviousReport();
-        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS));
+        Instant oneHourAgo = Instant.now().minus(1, HOURS);
+        previousReport.setPositionTime(oneHourAgo);
         rulesDao.updatePreviousReport(previousReport);
         var assetDto = getBasicAsset(previousReport.getAssetGuid());
         when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         PreviousReport fetchedReport = rulesDao.getPreviousReportByAssetGuid(previousReport.getAssetGuid());
 
@@ -200,8 +208,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         var assetDto = getBasicAsset(previousReport.getAssetGuid());
         when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
@@ -214,7 +221,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
@@ -227,7 +234,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
@@ -240,7 +247,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
@@ -253,7 +260,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
@@ -266,7 +273,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
@@ -275,15 +282,13 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     @Test
     @OperateOnDeployment("normal")
     public void runTaskWith30MinStepsWithPastPositionTime() throws Exception {
-        long thirtyMinsInMs = ONE_HOUR_IN_MILLISECONDS / 2;
         PreviousReport previousReport = getBasicPreviousReport();
-        previousReport.setPositionTime(Instant.ofEpochMilli(System.currentTimeMillis() - thirtyMinsInMs));
+        previousReport.setPositionTime(Instant.now().minus(30, MINUTES));
         rulesDao.updatePreviousReport(previousReport);
         var assetDto = getBasicAsset(previousReport.getAssetGuid());
         when(assetClient.getAssetById(any(), any())).thenReturn(assetDto);
 
-        CheckCommunicationTask checkCommunicationTask = new CheckCommunicationTask(rulesService, parameterService, assetClient, rulesDao);
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         TextMessage message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
@@ -296,7 +301,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
@@ -309,7 +314,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
@@ -322,7 +327,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);
@@ -335,7 +340,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNull(message);
@@ -348,7 +353,7 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
         previousReport.setUpdated(updated.minus(30, ChronoUnit.MINUTES));
         rulesDao.updatePreviousReport(previousReport);
 
-        checkCommunicationTask.run();
+        checkCommunicationTask.runAssetNotSendingRule();
 
         message = (TextMessage) jmsHelper.listenOnQueue(INCIDENT_EVENT);
         assertNotNull(message);

@@ -35,8 +35,14 @@ import static org.junit.Assert.*;
 public class EventStreamSenderTest extends BuildRulesServiceDeployment {
 
     private static final String user = "user";
-    private MessageConsumer subscriber;
     private static Jsonb jsonb;
+
+    static {
+        JsonBConfigurator configurator = new JsonBConfigurator();
+        jsonb = configurator.getContext(null);
+    }
+
+    private MessageConsumer subscriber;
 
     @Inject
     private RulesServiceBean rulesService;
@@ -49,11 +55,6 @@ public class EventStreamSenderTest extends BuildRulesServiceDeployment {
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
-
-    static {
-        JsonBConfigurator configurator = new JsonBConfigurator();
-        jsonb = configurator.getContext(null);
-    }
 
     @Test
     @OperateOnDeployment("normal")

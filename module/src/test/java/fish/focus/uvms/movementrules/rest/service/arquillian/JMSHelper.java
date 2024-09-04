@@ -13,12 +13,7 @@ package fish.focus.uvms.movementrules.rest.service.arquillian;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.Queue;
-import javax.jms.Session;
+import javax.jms.*;
 
 @Stateless
 public class JMSHelper {
@@ -27,10 +22,10 @@ public class JMSHelper {
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
-    
+
     @Resource(mappedName = "java:/jms/queue/UVMSExchangeEvent")
     private Queue exchangeQueue;
-    
+
     public Message getMessageFromExchangeQueue() throws Exception {
         Connection connection = connectionFactory.createConnection();
         try {
@@ -51,7 +46,7 @@ public class JMSHelper {
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             consumer = session.createConsumer(exchangeQueue);
 
-            while (consumer.receive(1000L) != null);
+            while (consumer.receive(1000L) != null) ;
         } finally {
             connection.close();
         }

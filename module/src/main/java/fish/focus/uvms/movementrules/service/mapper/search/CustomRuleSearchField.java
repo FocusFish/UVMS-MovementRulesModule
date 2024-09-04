@@ -31,7 +31,6 @@ public enum CustomRuleSearchField {
     }
 
     /**
-     *
      * @return The field name in the Alarm entity. Must be exact.
      */
     public String getFieldName() {
@@ -39,7 +38,6 @@ public enum CustomRuleSearchField {
     }
 
     /**
-     *
      * @return
      */
     public CustomRuleSearchTables getSearchTables() {
@@ -47,7 +45,6 @@ public enum CustomRuleSearchField {
     }
 
     /**
-     *
      * @return
      */
     public Class getClazz() {

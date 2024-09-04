@@ -22,7 +22,7 @@ public class LongPollingConstants {
     public static final String CONTENT_TYPE_APPLICATION_JSON = "application/json";
 
     public static final String PROPERTY_IDS = "ids";
-    
+
     public static final String PROPERTY_GUID = "guid";
 
     public static final String ACTION_CREATED = "created";

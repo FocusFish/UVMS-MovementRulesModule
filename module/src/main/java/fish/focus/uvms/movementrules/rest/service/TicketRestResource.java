@@ -17,14 +17,14 @@ import fish.focus.schema.movementrules.search.v1.TicketQuery;
 import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
 import fish.focus.schema.movementrules.ticket.v1.TicketType;
 import fish.focus.uvms.commons.date.DateUtils;
-import fish.focus.uvms.rest.security.RequiresFeature;
-import fish.focus.uvms.rest.security.UnionVMSFeature;
 import fish.focus.uvms.movementrules.service.bean.RulesServiceBean;
 import fish.focus.uvms.movementrules.service.bean.ValidationServiceBean;
 import fish.focus.uvms.movementrules.service.dao.RulesDao;
 import fish.focus.uvms.movementrules.service.dto.TicketListResponseDto;
 import fish.focus.uvms.movementrules.service.entity.Ticket;
 import fish.focus.uvms.movementrules.service.mapper.TicketMapper;
+import fish.focus.uvms.rest.security.RequiresFeature;
+import fish.focus.uvms.rest.security.UnionVMSFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +41,8 @@ import java.util.UUID;
 
 @Path("/tickets")
 @Stateless
-@Consumes(value = { MediaType.APPLICATION_JSON })
-@Produces(value = { MediaType.APPLICATION_JSON })
+@Consumes(value = {MediaType.APPLICATION_JSON})
+@Produces(value = {MediaType.APPLICATION_JSON})
 public class TicketRestResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(TicketRestResource.class);

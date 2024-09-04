@@ -7,6 +7,7 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+
 import org.junit.After;
 import org.junit.Before;
 
@@ -21,7 +22,7 @@ public class TransactionalTests extends BuildRulesServiceDeployment {
     }
 
     @After
-    public void after() throws SystemException, HeuristicRollbackException, HeuristicMixedException, RollbackException {
+    public void cleanupTransaction() throws SystemException, HeuristicRollbackException, HeuristicMixedException, RollbackException {
         userTransaction.rollback();
         //userTransaction.commit();
     }

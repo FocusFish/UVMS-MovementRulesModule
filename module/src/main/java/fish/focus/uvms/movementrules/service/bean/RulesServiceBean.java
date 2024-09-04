@@ -19,9 +19,6 @@ import fish.focus.schema.movementrules.ticket.v1.TicketStatusType;
 import fish.focus.schema.movementrules.ticket.v1.TicketType;
 import fish.focus.schema.movementrules.ticketrule.v1.TicketAndRuleType;
 import fish.focus.uvms.commons.notifications.NotificationMessage;
-import fish.focus.uvms.user.model.exception.ModelMarshallException;
-import fish.focus.wsdl.user.types.Feature;
-import fish.focus.wsdl.user.types.UserContext;
 import fish.focus.uvms.movementrules.model.dto.MovementDetails;
 import fish.focus.uvms.movementrules.service.boundary.AuditServiceBean;
 import fish.focus.uvms.movementrules.service.boundary.UserServiceBean;
@@ -48,6 +45,9 @@ import fish.focus.uvms.movementrules.service.mapper.search.CustomRuleSearchValue
 import fish.focus.uvms.movementrules.service.mapper.search.TicketSearchFieldMapper;
 import fish.focus.uvms.movementrules.service.mapper.search.TicketSearchValue;
 import fish.focus.uvms.movementrules.service.message.producer.bean.IncidentProducer;
+import fish.focus.uvms.user.model.exception.ModelMarshallException;
+import fish.focus.wsdl.user.types.Feature;
+import fish.focus.wsdl.user.types.UserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +74,7 @@ public class RulesServiceBean {
 
     @Inject
     private UserServiceBean userService;
-    
+
     @Inject
     private RulesDao rulesDao;
 
@@ -142,12 +142,12 @@ public class RulesServiceBean {
             return null;
         }
     }
-    
+
     public List<CustomRule> getCustomRulesByUser(String userName) {
         List<CustomRule> customRules = rulesDao.getCustomRulesByUser(userName);
         return customRules;
     }
-    
+
     public List<CustomRule> getRunnableCustomRules() {
         return rulesDao.getRunnableCustomRuleList();
     }
@@ -295,7 +295,7 @@ public class RulesServiceBean {
                     rulesDao.removeSubscription(subscription);
 
                     // TODO: Don't log rule guid, log subscription guid?
-                    auditService.sendAuditMessage(AuditObjectTypeEnum.CUSTOM_RULE_SUBSCRIPTION, AuditOperationEnum.DELETE, updateSubscriptionType.getRuleGuid(), updateSubscriptionType.getSubscription().getOwner() + "/" + updateSubscriptionType.getSubscription().getType(), username);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                    auditService.sendAuditMessage(AuditObjectTypeEnum.CUSTOM_RULE_SUBSCRIPTION, AuditOperationEnum.DELETE, updateSubscriptionType.getRuleGuid(), updateSubscriptionType.getSubscription().getOwner() + "/" + updateSubscriptionType.getSubscription().getType(), username);
                     break;
                 }
             }
@@ -361,10 +361,10 @@ public class RulesServiceBean {
         return ticketListDto;
     }
 
-    public Instant getLastTriggeredForRule(UUID ruleGuid){
+    public Instant getLastTriggeredForRule(UUID ruleGuid) {
         Ticket ticket = rulesDao.getLatestTicketForRule(ruleGuid);
         Instant retVal = null;
-        if(ticket != null){
+        if (ticket != null) {
             retVal = ticket.getUpdated();
         }
         return retVal;
@@ -447,7 +447,7 @@ public class RulesServiceBean {
         List<TicketSearchValue> searchKeyValues = TicketSearchFieldMapper.mapSearchField(query.getTicketSearchCriteria());
         List<UUID> validRuleGuids = rulesDao.getCustomRulesForTicketsByUser(loggedInUser);
         List<String> validRuleStrings = new ArrayList<>();
-        for (UUID uuid: validRuleGuids) {
+        for (UUID uuid : validRuleGuids) {
             validRuleStrings.add(uuid.toString());
         }
         String sql = TicketSearchFieldMapper.createSelectSearchSql(searchKeyValues, validRuleStrings, true);
@@ -476,13 +476,13 @@ public class RulesServiceBean {
     }
 
 
-    // Triggered by RulesTimerBean
+    // Triggered by CheckCommunicationTask
     public List<PreviousReport> getPreviousMovementReports() {
         return rulesDao.getPreviousReportList();
     }
 
 
-    // Triggered by timer rule
+    // Triggered by CheckCommunicationTask
     public void timerRuleTriggered(String ruleName, PreviousReport previousReport) {
         LOG.info("Timer rule triggered for asset: {}", previousReport.getAssetGuid());
 
@@ -545,7 +545,7 @@ public class RulesServiceBean {
     }
 
 
-    public Ticket getTicketByGuid(UUID guid){
+    public Ticket getTicketByGuid(UUID guid) {
         return rulesDao.getTicketByGuid(guid);
     }
 
