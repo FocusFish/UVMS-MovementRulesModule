@@ -8,6 +8,7 @@ import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuit
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import java.io.File;
 @ArquillianSuiteDeployment
 public abstract class BuildRulesServiceDeployment {
 
-    final static Logger LOG = LoggerFactory.getLogger(BuildRulesServiceDeployment.class);
+    static final Logger LOG = LoggerFactory.getLogger(BuildRulesServiceDeployment.class);
 
     @Deployment(name = "normal", order = 2)
     public static Archive<?> createDeployment() {
@@ -41,6 +42,9 @@ public abstract class BuildRulesServiceDeployment {
         testWar.addAsResource("persistence-integration.xml", "META-INF/persistence.xml");
 
         testWar.addAsResource("beans.xml", "META-INF/beans.xml");
+
+        // required by Mockito on openjdk
+        testWar.addAsManifestResource(new StringAsset("Dependencies: jdk.unsupported\n"), "MANIFEST.MF");
 
         testWar.delete("/WEB-INF/web.xml");
         testWar.addAsWebInfResource("mock-web.xml", "web.xml");
