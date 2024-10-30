@@ -16,6 +16,7 @@ import fish.focus.uvms.commons.date.DateUtils;
 import fish.focus.uvms.movementrules.service.dao.MockData;
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +36,16 @@ public class MapperTest {
     @InjectMocks
     private CustomRuleMapper mapper;
 
+    private AutoCloseable openedMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openedMocks = MockitoAnnotations.openMocks(this);
+    }
+
+    @After
+    public void closeMocks() throws Exception {
+        openedMocks.close();
     }
 
     @Test

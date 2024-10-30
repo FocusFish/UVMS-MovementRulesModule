@@ -43,8 +43,8 @@ public abstract class BuildRulesServiceDeployment {
 
         testWar.addAsResource("beans.xml", "META-INF/beans.xml");
 
-        // required by Mockito on openjdk
-        testWar.addAsManifestResource(new StringAsset("Dependencies: jdk.unsupported\n"), "MANIFEST.MF");
+        // required by Mockito when running in Arquillian, see https://github.com/mockito/mockito/issues/3304
+        testWar.addAsWebInfResource("jboss-deployment-structure.xml");
 
         testWar.delete("/WEB-INF/web.xml");
         testWar.addAsWebInfResource("mock-web.xml", "web.xml");
