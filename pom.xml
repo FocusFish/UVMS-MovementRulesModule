@@ -10,6 +10,7 @@
 
     <groupId>fish.focus.uvms.movement-rules</groupId>
     <artifactId>movement-rules</artifactId>
+    <name>movement-rules</name>
     <version>2.4.23-SNAPSHOT</version>
     <packaging>pom</packaging>
 
