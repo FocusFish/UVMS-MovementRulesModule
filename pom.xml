@@ -20,7 +20,7 @@
         <uvms.pom.version>3.33</uvms.pom.version>
         <exchange.model.version>5.3.32</exchange.model.version>
         <user.model.version>2.2.6</user.model.version>
-        <audit.model.version>4.3.12</audit.model.version>
+        <audit.model.version>4.4.0</audit.model.version>
         <spatial.model.version>2.2.12</spatial.model.version>
         <uvms.config.version>4.2.0</uvms.config.version>
         <usm4uvms.version>4.1.12</usm4uvms.version>
