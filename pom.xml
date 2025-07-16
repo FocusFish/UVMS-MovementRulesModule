@@ -26,7 +26,7 @@
         <usm4uvms.version>4.1.12</usm4uvms.version>
         <uvms.common.version>4.1.15</uvms.common.version>
         <uvms.asset.version>6.8.37</uvms.asset.version>
-        <uvms.incident.version>1.0.15</uvms.incident.version>
+        <uvms.incident.version>1.1.0</uvms.incident.version>
 
         <project.scm.id>github</project.scm.id>
         <scm.connection>scm:git:https://github.com/FocusFish/UVMS-MovementRulesModule.git</scm.connection>
