@@ -13,6 +13,7 @@ package fish.focus.uvms.movementrules.service.dao;
 
 import fish.focus.uvms.movementrules.service.entity.CustomRule;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,9 +40,16 @@ public class DaoBeanMockerTest {
     @InjectMocks
     private RulesDao dao;
 
+    private AutoCloseable openedMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openedMocks = MockitoAnnotations.openMocks(this);
+    }
+
+    @After
+    public void closeMocks() throws Exception {
+        openedMocks.close();
     }
 
     @Test

@@ -11,6 +11,7 @@ import fish.focus.uvms.movementrules.service.entity.PreviousReport;
 import fish.focus.uvms.movementrules.service.message.JMSHelper;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +56,8 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     private CheckCommunicationTask checkCommunicationTask;
     private final JMSHelper jmsHelper = new JMSHelper();
 
+    private AutoCloseable openedMocks;
+
     @Before
     public void setThreshold() throws Exception {
         parameterService.setStringValue(ParameterKey.ASSET_NOT_SENDING_THRESHOLD.getKey(),
@@ -66,9 +69,14 @@ public class CheckCommunicationTaskTest extends TransactionalTests {
     }
 
     @Before
-    public void initMocks() {
-        MockitoAnnotations.initMocks(this);
+    public void openMocks() {
+        openedMocks = MockitoAnnotations.openMocks(this);
         checkCommunicationTask = new CheckCommunicationTask(rulesServiceBean, parameterService, assetClient, rulesDao);
+    }
+
+    @After
+    public void closeMocks() throws Exception {
+        openedMocks.close();
     }
 
     @Test
