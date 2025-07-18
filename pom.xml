@@ -21,7 +21,7 @@
         <exchange.model.version>5.4.0</exchange.model.version>
         <user.model.version>2.2.6</user.model.version>
         <audit.model.version>4.4.0</audit.model.version>
-        <spatial.model.version>2.2.12</spatial.model.version>
+        <spatial.model.version>2.3.0</spatial.model.version>
         <uvms.config.version>4.2.0</uvms.config.version>
         <usm4uvms.version>4.1.12</usm4uvms.version>
         <uvms.common.version>4.1.15</uvms.common.version>
