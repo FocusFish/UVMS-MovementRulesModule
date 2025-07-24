@@ -23,7 +23,7 @@
         <audit.model.version>4.4.0</audit.model.version>
         <spatial.model.version>2.3.0</spatial.model.version>
         <uvms.config.version>4.2.0</uvms.config.version>
-        <usm4uvms.version>4.1.12</usm4uvms.version>
+        <usm4uvms.version>4.2.0</usm4uvms.version>
         <uvms.common.version>4.2.0</uvms.common.version>
         <uvms.asset.version>6.8.37</uvms.asset.version>
         <uvms.incident.version>1.1.0</uvms.incident.version>
